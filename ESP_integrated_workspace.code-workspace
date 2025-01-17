@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../esp12-f"
+		},
+		{
+			"path": "../esp8266"
+		},
+		{
+			"path": "../esp32"
+		}
+	],
+	"settings": {}
+}
