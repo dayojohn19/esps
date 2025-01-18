@@ -25,7 +25,7 @@
 					"match": ".*",
 					// "cmd": "echo '${fileBasename}' saved."
 					// "cmd": "./sync.sh "
-					"cmd": "${workspaceFolder}./sync.sh"
+					"cmd": "${workspaceFolder}/sync.sh"
 				},
 			]
 		}
