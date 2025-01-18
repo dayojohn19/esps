@@ -6,8 +6,12 @@ import json
 import time
 import esp  
 import machine
+
+# Initialize global variables
 timer = None
 led = machine.Pin(2, machine.Pin.OUT)
+
+# LED Blinking functions
 def blink_led(timer):
     led.value(not led.value()) 
 
@@ -16,6 +20,7 @@ def start_blinking(speed=500):
     if timer is None: 
         timer = machine.Timer(0)
         timer.init(period=speed, mode=machine.Timer.PERIODIC, callback=blink_led)
+
 def stop_blinking():
     global timer
     if timer is not None:
@@ -23,7 +28,7 @@ def stop_blinking():
         timer = None 
         led.value(1)
 
-
+# Network configuration
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_ap.active(True)
 wlan_ap.config(essid='Dayo network config', password='123456789')
@@ -31,20 +36,20 @@ wlan_sta = network.WLAN(network.STA_IF)
 temp_server_timeout = 40
 server_socket = None
 start_time = None
+
 def wait_to_connect(wlan_sta):
-    startTime=time.time()
-    while not wlan_sta.isconnected() and time.time()-startTime<=10:
+    startTime = time.time()
+    while not wlan_sta.isconnected() and time.time() - startTime <= 10:
         print('connecting')
         time.sleep(0.8)
     stop_blinking()
 
-
+# HTTP response functions
 def send_response(client, payload, status_code=200):
     client.sendall("HTTP/1.0 {} OK\r\n".format(status_code))
     client.sendall("Content-Type: text/html\r\n")
     client.sendall("Content-Length: {}\r\n".format(len(payload)))
     client.sendall("\r\n")
-    
     if len(payload) > 0:
         client.sendall(payload)
 
@@ -68,7 +73,6 @@ def handle_root(client):
     send_response(client, response_header + response_variable + response_footer)
 
 def handle_configure(client, request):
-    import time
     match = ure.search("ssid=([^&]*)&password=(.*)", request)
     if match is None:
         send_response(client, "Parameters not found", status_code=400)
@@ -81,7 +85,7 @@ def handle_configure(client, request):
     print(f"\n\n     Creating New Config for {ssid}")
     with open('configs/wifiSettings.json') as f:
         config = json.load(f)
-    with open('configs/wifiSettings.json','w') as f:
+    with open('configs/wifiSettings.json', 'w') as f:
         config["ssid"] = ssid
         config["ssid_password"] = password
         json.dump(config, f)
@@ -89,25 +93,19 @@ def handle_configure(client, request):
     time.sleep(1)
     wlan_sta.connect(ssid, password)
     wait_to_connect(wlan_sta)
-    # if not wlan_sta.isconnected():
     if wlan_sta.isconnected():
         stop_blinking()
-        # print("Restarting Wifi")
         import machine
         machine.reset()       
-    # handle_root(client)    
     send_response(client, "CANT CONNECT {}".format(ssid))
-    
 
 def handle_not_found(client, url):
     send_response(client, "Path not found: {}".format(url), status_code=404)
 
 def stop():
     global server_socket
-    
     if server_socket:
         server_socket.close()
-
 
 def handle_server(client, ntimeout):
     import os
@@ -117,36 +115,31 @@ def handle_server(client, ntimeout):
     <ul>
     """
     server_variable = ""
-    directory = '/configs'  # Change to your desired path
+    directory = '/configs'
     files = os.listdir(directory)
     for file in files:
-        pfile = directory+'/'+file
+        pfile = directory + '/' + file
         if os.stat(pfile)[0] == 0x4000:
             print('its a path not file')
             pass
         else:
-            server_variable += f"""<li><a  href="/download?file={pfile}" >
+            server_variable += f"""<li><a href="/download?file={pfile}">
              {file}</a></li>
                """
-
     server_footer = """
     </ul>
-
     <a href="/exit"> EXIT </a>
     """
     send_response(client, server_header + server_variable + server_footer)
 
 def extract_file_path(request):
-    # Manually parse the file parameter from the query string in the URL
-    print('REquest: ',request)
     try:
-        # Extract the part after '?file=' in the request URL
-        start_index = request.find('?file=') + 6  # 'file=' is 5 characters, plus 1 for the '='
-        if start_index > 5:  # Check if '?file=' was found in the URL
-            end_index = request.find(' ', start_index)  # Find the next space after the file name
+        start_index = request.find('?file=') + 6
+        if start_index > 5:
+            end_index = request.find(' ', start_index)
             if end_index == -1:
-                end_index = len(request)  # If no space is found, take the rest of the string
-            return request[start_index:end_index]  # Return the filename
+                end_index = len(request)
+            return request[start_index:end_index]
     except Exception as e:
         print(f"Error extracting file path: {e}")
     return None
@@ -161,21 +154,15 @@ def handle_download(client, fpath):
         return
     client.send('HTTP/1.1 200 OK\r\n')
     client.send('Content-Type: application/octet-stream\r\n')
-    client.send(f'Content-Disposition: attachment; filename="{fpath}"\r\n')  # Force download
+    client.send(f'Content-Disposition: attachment; filename="{fpath}"\r\n')
     client.send('Connection: close\r\n\r\n')
-    # client.send(fpath)
     with open(fpath, 'rb') as f:
-        # file_content = f.read()
         chunk = f.read(1024)
         while chunk:
             client.send(chunk)
             chunk = f.read(1024)
 
-
 def temporary_server():
-    # wlan_sta.active(False)
-    # wlan_ap.active(True)
-    # wlan_ap.config(essid='ESP12', password='1234')
     led.value(0)
     addr = socket.getaddrinfo('192.168.4.1', 80)[0][-1]
     global server_socket
@@ -183,8 +170,7 @@ def temporary_server():
     server_socket.bind(addr)
     server_socket.listen(1)
     server_socket.setblocking(False)
-    # server_socket.settimeout(5)
-    print('listenings on', addr)
+    print('listening on', addr)
     global start_time
     start_time = time.time()
     
@@ -198,7 +184,7 @@ def temporary_server():
             client, addr = server_socket.accept()
             client.settimeout(5.0)
             print('client connected from', addr)
-            start_time+=30
+            start_time += 30
             request = b""
             try:
                 while not "\r\n\r\n" in request:
@@ -210,13 +196,11 @@ def temporary_server():
                 continue
             url = ure.search("(?:GET|POST) /(.*?)(?:\\?.*?)? HTTP", request.decode('ascii')).group(1).rstrip("/")
             if url == "":
-                handle_server(client,ntimeout)
+                handle_server(client, ntimeout)
             if '/download' in request:
                 request = request.decode('utf-8')
                 file_path = extract_file_path(request)
-                print('Found path: ',file_path)
-                # client.send()
-                    # Handle the download request
+                print('Found path: ', file_path)
                 handle_download(client, file_path)
             if '/exit' in request:
                 client.close()
@@ -233,7 +217,6 @@ def temporary_server():
     gc.collect()
     client.close()
     server_socket.close()
-    # ap_if.active(False)
     return
 
 def start(port=80):
@@ -244,10 +227,8 @@ def start(port=80):
     server_socket = socket.socket()
     server_socket.bind(addr)
     server_socket.listen(1)
-    # server_socket.setblocking(False)
     print('listening on', addr)
     wlan_ap.active(True)
-    # wlan_sta
     while True:
         client, addr = server_socket.accept()
         client.settimeout(5.0)
@@ -260,7 +241,6 @@ def start(port=80):
             pass
         
         if "HTTP" not in request:
-            # skip invalid requests
             client.close()
             continue
         
@@ -277,66 +257,46 @@ def start(port=80):
         client.close()
     ap_if.active(False)
 
-
-
-
-
-
-
-def connectWifi(wifiSSID=None,wifiPassword=None): # option to put SSID AND PAssword
+def connectWifi(wifiSSID=None, wifiPassword=None):
     print('Temporary Making Server')
-    temporary_server() # Temporary open a server
+    temporary_server()
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
     start_blinking(150)
-    
-    # wlan.PM_POWERSAVE
     time.sleep(1)
-    import gc
     gc.collect()
     time.sleep(1)
     esp.osdebug(None)
     time.sleep(1)
-    time.sleep(1)
-    if wifiSSID==None:
+    if wifiSSID is None:
         print('Importing from wifi settings json..')
         with open('configs/wifiSettings.json') as f:
             config = json.load(f)
             wifiSSID = config['ssid']
             wifiPassword = config['ssid_password']
-    elif wifiSSID != None:
+    else:
         print(f"\n\n     Creating New Config for {wifiSSID}")
         with open('configs/wifiSettings.json') as f:
             config = json.load(f)
-        with open('configs/wifiSettings.json','w') as f:
+        with open('configs/wifiSettings.json', 'w') as f:
             config["ssid"] = wifiSSID
             config["ssid_password"] = wifiPassword
             json.dump(config, f)
     time.sleep(1)
     print(f"     Connecting:  {wifiSSID}  {wifiSSID}")
-    wlan.connect(wifiSSID,wifiPassword)
+    wlan.connect(wifiSSID, wifiPassword)
     wait_to_connect(wlan)
-    time.sleep(1)
-    WifiName = wifiSSID
-    time.sleep(1)
-    WifiConnected = wlan.isconnected()
     time.sleep(1)
     if wlan.isconnected():
         print('Wifi Connected')
         stop_blinking()
         wlan_ap.active(False)
-        return [True,' Wifi Connected']
+        return [True, ' Wifi Connected']
     else:
-        
         print('Cant Connect Restarting')
         gc.collect()
         time.sleep(1)
         start()
-        # return [False, ' Wifi not Connected ']
-        # import machine
-        # machine.reset()
-
-
 
 connectWifi()
 

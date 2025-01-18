@@ -1,7 +1,0 @@
-[
-    {
-        "key": "ctrl+cmd+s",
-        "command": "workbench.action.tasks.runTask",
-        "args": "Run Shell Script" // The label of the task defined in tasks.json
-    }
-]
