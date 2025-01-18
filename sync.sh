@@ -11,7 +11,10 @@ echo "File to convert: $file_to_convert"
 # Compile Python script
 mpy-cross "$file_to_convert" -o testfolder/"${file_to_convert%.py}.mpy"
 echo $(pwd)
-echo "------------------"
+file_name="$1"
+# Combine the directory and file name to get the full path
+file_path="${current_dir}/${file_name}"
+echo "------------------${file_path}------------------"
 sleep 1
 # Get the remote URL
 url=$(git remote get-url origin)
