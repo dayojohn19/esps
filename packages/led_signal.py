@@ -15,6 +15,3 @@ def stop_blinking():
         timer.deinit() 
         timer = None 
         led.value(1)
-a=1
-b=2
-
