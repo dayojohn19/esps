@@ -10,7 +10,7 @@ sleep 1
 git add .
 git commit -am 'Auto Commit' 
 git push 
-sleep 1
+sleep 5
 echo "Changes have been committed with message: $COMMIT_MSG"
 
 # rsync -avz /Users/nhoj/Desktop/garden/ESP_/synctest /Users/nhoj/Desktop/garden/esp32/synctest
