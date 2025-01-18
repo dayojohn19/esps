@@ -25,3 +25,5 @@ if __name__ == "__main__":
         print("Usage: python compile_current_file.py <path_to_current_file>")
     else:
         compile_file(sys.argv[1])
+
+x=1
