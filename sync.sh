@@ -9,7 +9,7 @@ source env/bin/activate
 echo "File to convert: $file_to_convert"
 
 # Compile Python script
-mpy-cross "$file_to_convert" -o path/to/output_folder/"${file_to_convert%.py}.mpy"
+mpy-cross "$file_to_convert" -o testfolder/"${file_to_convert%.py}.mpy"
 
 # Get the remote URL
 url=$(git remote get-url origin)
