@@ -9,7 +9,7 @@ echo "Saving to $url"
 sleep 1
 git add .
 git commit -am 'Auto Commit' 
-# git push --force
+git push 
 sleep 1
 echo "Changes have been committed with message: $COMMIT_MSG"
 
