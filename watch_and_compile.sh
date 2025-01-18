@@ -1,42 +1,50 @@
-#!/bin/bash
+import sys
+import time
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import os
+import subprocess
 
-# Directory to watch
-WATCH_DIR=$(pwd)
-# Directory to move .mpy files to
-TEST_DIR="$pwd/path/to/test/folder"
+WATCH_DIR = os.getcwd()
+TEST_DIR = "/path/to/test/folder"
 
-# Ensure inotify-tools is installed
-if ! command -v inotifywait &> /dev/null
-then
-    echo "inotifywait could not be found, please install inotify-tools"
-    exit
-fi
+class Watcher:
+    def __init__(self, directory_to_watch):
+        self.DIRECTORY_TO_WATCH = directory_to_watch
+        self.observer = Observer()
 
-# Function to run the script in a new terminal window
-run_in_new_terminal() {
-    osascript <<EOF
-tell application "Terminal"
-    do script "$1"
-end tell
-EOF
-}
+    def run(self):
+        event_handler = Handler()
+        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+        self.observer.start()
+        try:
+            while True:
+                time.sleep(5)
+        except KeyboardInterrupt:
+            self.observer.stop()
+        self.observer.join()
 
-# Watch for changes in .py files
-inotifywait -m -e close_write --format '%w%f' "$WATCH_DIR" | while read FILE
-do
-    if [[ "$FILE" == *.py ]]; then
-        # Run mpy-cross on the changed file
-        mpy-cross "$FILE"
-        
-        # Get the base filename without extension
-        BASENAME=$(basename "$FILE" .py)
-        
-        # Move the .mpy file to the test folder
-        mv "${WATCH_DIR}/${BASENAME}.mpy" "$TEST_DIR"
-        
-        echo "Processed and moved ${BASENAME}.mpy to $TEST_DIR"
-        
-        # Run the .mpy file in a new terminal window
-        run_in_new_terminal "python ${TEST_DIR}/${BASENAME}.mpy"
-    fi
-done
+class Handler(FileSystemEventHandler):
+    @staticmethod
+    def on_modified(event):
+        if event.is_directory:
+            return None
+        elif event.src_path.endswith(".py"):
+            # Run mpy-cross on the changed file
+            subprocess.run(["mpy-cross", event.src_path])
+            
+            # Get the base filename without extension
+            basename = os.path.basename(event.src_path).replace(".py", ".mpy")
+            
+            # Move the .mpy file to the test folder
+            mpy_file = os.path.join(WATCH_DIR, basename)
+            subprocess.run(["mv", mpy_file, TEST_DIR])
+            
+            print(f"Processed and moved {basename} to {TEST_DIR}")
+            
+            # Run the .mpy file in a new terminal window
+            subprocess.run(["osascript", "-e", f'tell application "Terminal" to do script "python {os.path.join(TEST_DIR, basename)}"'])
+
+if __name__ == '__main__':
+    w = Watcher(WATCH_DIR)
+    w.run()
