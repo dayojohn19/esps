@@ -26,4 +26,3 @@ if __name__ == "__main__":
     else:
         compile_file(sys.argv[1])
 
-x=1
