@@ -1,5 +1,5 @@
 #!/bin/bash
-
+read "file"
 # Ensure the script is run with the environment
 source env/bin/activate
 
