@@ -1,23 +1,25 @@
-"vsicons.associations.folders": [
-    {
-        "icon": "folder-src",
-        "extensions": [
-            "src"
-        ],
-        "format": "svg"
-    },
-    {
-        "icon": "folder-test",
-        "extensions": [
-            "test"
-        ],
-        "format": "svg"
-    },
-    {
-        "icon": "folder-config",
-        "extensions": [
-            "config"
-        ],
-        "format": "svg"
-    }
-]
+{
+    "vsicons.associations.folders": [
+        {
+            "icon": "folder-src",
+            "extensions": [
+                "src"
+            ],
+            "format": "svg"
+        },
+        {
+            "icon": "folder-test",
+            "extensions": [
+                "test"
+            ],
+            "format": "svg"
+        },
+        {
+            "icon": "folder-config",
+            "extensions": [
+                "config"
+            ],
+            "format": "svg"
+        }
+    ]
+}
