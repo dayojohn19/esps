@@ -1,30 +1,31 @@
-# echo "Enter commit message:"
-# read COMMIT_MSG
+#!/bin/bash
 
-# Ask for destination path
+# Ensure the script is run with the environment
+source env/bin/activate
+
+
+# Compile Python script
 mpy-cross test1.py
-# echo "Sync from $SOURCE to $DEST completed."
+
+# Get the remote URL
 url=$(git remote get-url origin)
 echo "Saving to $url"
 sleep 1
+
+# Commit and push changes
 git add .
-git commit -am 'Auto Commit' 
-git push 
+git commit -am 'Auto Commit'
+git push
 sleep 5
-echo "Changes have been committed with message: $COMMIT_MSG"
+echo "Changes have been committed."
 
-# rsync -avz /Users/nhoj/Desktop/garden/ESP_/synctest /Users/nhoj/Desktop/garden/esp32/synctest
-# # Perform the rsync operation
-# rsync -avz "$SOURCE" "$DEST"
-
-sleep 1
+# Update version file
 VERSION_FILE="version.json"
 if [ ! -f "$VERSION_FILE" ]; then
     echo "$VERSION_FILE not found. Creating a new file with version 0."
     echo '{"version": 0}' > "$VERSION_FILE"
     VERSION=0
 else
-    # Read the current version using jq
     VERSION=$(jq '.version' "$VERSION_FILE")
 fi
 NEW_VERSION=$((VERSION + 1))
