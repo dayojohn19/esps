@@ -1,11 +1,15 @@
-#!/bin/bash
-read "file"
+# Get the last modified .py file if no input is provided
+if [ -z "$1" ]; then
+    file_to_convert=$(ls -t *.py | head -n 1)
+else
+    file_to_convert="${1}.py"
+fi
 # Ensure the script is run with the environment
 source env/bin/activate
 
 
 # Compile Python script
-mpy-cross test1.py
+mpy-cross file_to_convert
 
 # Get the remote URL
 url=$(git remote get-url origin)
