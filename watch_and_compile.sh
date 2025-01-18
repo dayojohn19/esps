@@ -6,9 +6,9 @@ WATCH_DIR=$(pwd)
 TEST_DIR="$pwd/path/to/test/folder"
 
 # Ensure inotify-tools is installed
-if ! command -v inotifywait &> /dev/null
+if ! command -v mpy-cross &> /dev/null
 then
-    echo "inotifywait could not be found, please install inotify-tools"
+    echo "mpy-cross could not be found, please install inotify-tools"
     exit
 fi
 
