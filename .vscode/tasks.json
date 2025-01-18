@@ -1,0 +1,21 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Sync Files to MicroPython",
+            "type": "shell",
+            "command": "./sync.sh",
+            "presentation": {
+                "reveal": "always", // Always reveal the terminal
+                "panel": "dedicated" // Use a dedicated terminal panel
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    ]
+}
+// rsync -avz /path/to/local/folder/ user@device:/path/to/micropython/folder/

@@ -1,8 +1,18 @@
 # ESP libraryies
 
-
-``` source env/bin/activate```
+## Everyday Use
+        source env/bin/activate
 <small>Python3.9</small>
+
+after editing files always update the files with 
+
+        mpy-cross path/file 
+        
+<small>can just drag and drop the file on the terminal</small>
+
+
+## View all reusable ESP packages
+-   [packages](/packages/)
 
 ## Firmware
 ### Esp 12 F [check this link](https://forum.micropython.org/viewtopic.php?t=3217)
@@ -26,4 +36,3 @@ esptool/esptool.py --chip esp32 --port /dev/tty.usbserial-58EA0095511 erase_flas
 
 esptool.py --chip esp32 --port /dev/tty.usbserial-58EA0095511 --baud 115200 write_flash -z 0x1000 /Users/nhoj/Desktop/garden/ESP_/firmwares/ESP32_GENERIC-20241129-v1.24.1.bin
 ```
-integrated workspace esp libs

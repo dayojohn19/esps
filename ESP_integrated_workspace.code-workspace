@@ -10,8 +10,23 @@
 			"path": "../esp8266"
 		},
 		{
-			"path": "../esp32"
+			"path": "../esp32" 
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.autoSave": "afterDelay", // Enable auto-save after a delay
+		"files.autoSaveDelay": 5000, // Set the delay to 1 second (1000 ms)
+		"editor.formatOnSave": true, // Automatically format files on save	
+		"emeraldwalk.runonsave": {
+			"commands": [
+				{
+					// Run whenever any file is saved
+					"runInTerminal": true,
+					"match": ".*",
+					// "cmd": "echo '${fileBasename}' saved."
+					"cmd": "./sync.sh "
+				},
+			]
+		}
+	},
 }
