@@ -6,11 +6,11 @@ WATCH_DIR=$(pwd)
 TEST_DIR="$pwd/path/to/test/folder"
 
 # Ensure inotify-tools is installed
-if ! command -v mpy-cross &> /dev/null
-then
-    echo "mpy-cross could not be found, please install inotify-tools"
-    exit
-fi
+# if ! command -v mpy-cross &> /dev/null
+# then
+#     echo "mpy-cross could not be found, please install inotify-tools"
+#     exit
+# fi
 
 # Function to run the script in a new terminal window
 run_in_new_terminal() {
