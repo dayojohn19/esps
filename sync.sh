@@ -8,7 +8,7 @@ url=$(git remote get-url origin)
 echo "Saving to $url"
 sleep 1
 git add .
-git commit -am '$COMMIT_MSG' 
+git commit -am 'Auto Commit' 
 # git push --force
 sleep 1
 echo "Changes have been committed with message: $COMMIT_MSG"
