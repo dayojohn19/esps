@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Directory to watch
-WATCH_DIR="/path/to/your/python/files"
+WATCH_DIR=$(pwd)
 # Directory to move .mpy files to
 TEST_DIR="/path/to/test/folder"
 
