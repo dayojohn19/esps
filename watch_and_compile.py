@@ -19,6 +19,7 @@ class Watcher:
         self.observer.start()
         try:
             while True:
+                print("running")
                 time.sleep(5)
         except KeyboardInterrupt:
             self.observer.stop()
