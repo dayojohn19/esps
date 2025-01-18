@@ -2,7 +2,7 @@
 # read COMMIT_MSG
 
 # Ask for destination path
-
+mpy-cross test1.py
 # echo "Sync from $SOURCE to $DEST completed."
 url=$(git remote get-url origin)
 echo "Saving to $url"
