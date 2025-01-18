@@ -14,7 +14,7 @@ def compile_file(file_path):
     basename = os.path.basename(file_path).replace(".py", ".mpy")
     
     # Move the .mpy file to the test folder
-    test_dir = "/path/to/test/folder"
+    test_dir = "/Users/nhoj/Desktop/garden/ESP_/testfolder"
     mpy_file = os.path.join(os.path.dirname(file_path), basename)
     subprocess.run(["mv", mpy_file, test_dir])
     
