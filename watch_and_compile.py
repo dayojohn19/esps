@@ -28,6 +28,7 @@ class Watcher:
 class Handler(FileSystemEventHandler):
     @staticmethod
     def on_modified(event):
+        subprocess.run(["echo file"])
         if event.is_directory:
             return None
         elif event.src_path.endswith(".py"):
