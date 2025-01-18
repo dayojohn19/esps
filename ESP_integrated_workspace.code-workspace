@@ -15,7 +15,7 @@
 	],
 	"settings": {
 		"files.autoSave": "afterDelay", // Enable auto-save after a delay
-		"files.autoSaveDelay": 5000, // Set the delay to 1 second (1000 ms)
+		"files.autoSaveDelay": 20000, // Set the delay to 1 second (1000 ms)
 		"editor.formatOnSave": true, // Automatically format files on save	
 		"emeraldwalk.runonsave": {
 			"commands": [
