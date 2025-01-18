@@ -24,7 +24,8 @@
 					"runInTerminal": true,
 					"match": ".*",
 					// "cmd": "echo '${fileBasename}' saved."
-					"cmd": "./sync.sh "
+					// "cmd": "./sync.sh "
+					"cmd": "${workspaceFolder}./sync.sh"
 				},
 			]
 		}
