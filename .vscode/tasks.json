@@ -6,7 +6,7 @@
         {
             "label": "Sync Files to MicroPython",
             "type": "shell",
-            "command": "./sync.sh",
+            "command": "${workspaceFolder}./sync.sh",
             "presentation": {
                 "reveal": "always", // Always reveal the terminal
                 "panel": "dedicated" // Use a dedicated terminal panel
