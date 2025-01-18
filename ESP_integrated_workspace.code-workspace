@@ -1,15 +1,19 @@
 {
 	"folders": [
 		{
+			"name": "ESP_",
 			"path": "."
 		},
 		{
+			"name": "esp12-f",
 			"path": "../esp12-f"
 		},
 		{
+			"name": "esp8266",
 			"path": "../esp8266"
 		},
 		{
+			"name": "esp32",
 			"path": "../esp32"
 		}
 	],

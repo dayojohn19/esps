@@ -10,6 +10,7 @@ echo "File to convert: $file_to_convert"
 
 # Compile Python script
 mpy-cross "$file_to_convert" -o testfolder/"${file_to_convert%.py}.mpy"
+echo $(pwd)
 echo "------------------"
 sleep 1
 # Get the remote URL
