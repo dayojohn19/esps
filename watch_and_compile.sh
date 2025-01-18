@@ -3,7 +3,7 @@
 # Directory to watch
 WATCH_DIR=$(pwd)
 # Directory to move .mpy files to
-TEST_DIR="/path/to/test/folder"
+TEST_DIR="$pwd/path/to/test/folder"
 
 # Ensure inotify-tools is installed
 if ! command -v inotifywait &> /dev/null
