@@ -5,7 +5,6 @@ import json
 import machine
 from time import sleep
 import gc
-
 class OTAUpdater:
     def __init__(self, ssid, password, repo_url, filenames):
         self.filenames = filenames
