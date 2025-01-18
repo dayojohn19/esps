@@ -17,8 +17,6 @@ echo "Changes have been committed with message: $COMMIT_MSG"
 # # Perform the rsync operation
 # rsync -avz "$SOURCE" "$DEST"
 
-
-
 sleep 1
 VERSION_FILE="version.json"
 if [ ! -f "$VERSION_FILE" ]; then
