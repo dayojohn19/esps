@@ -6,10 +6,10 @@ else
 fi
 # Ensure the script is run with the environment
 source env/bin/activate
-
+echo "File to convert: $file_to_convert"
 
 # Compile Python script
-mpy-cross file_to_convert
+mpy-cross "$file_to_convert"
 
 # Get the remote URL
 url=$(git remote get-url origin)
