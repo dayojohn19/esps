@@ -1,0 +1,1704 @@
+<!doctype html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="utf-8">
+  <link rel="mask-icon" href="/assets/adafruit_favicon-fa25640e.svg" color="#000000">
+  <link rel="icon" type="image/x-icon" href="/assets/favicon-5362a6c7.ico" />
+
+    <title>Access WebREPL | MicroPython Basics: ESP8266 WebREPL | Adafruit Learning System</title>
+
+  
+  <meta name="guide-title" content="MicroPython Basics: ESP8266 WebREPL">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@adafruit">
+  <meta name="twitter:title" content="MicroPython Basics: ESP8266 WebREPL">
+  <meta name="twitter:description" content="Access a Python console over WiFi with the ESP8266!">
+  <meta name="twitter:image:src" content="https://cdn-learn.adafruit.com/guides/images/000/001/419/medium800/IMG_5134.jpg">
+  <meta name="twitter:domain" content="https://learn.adafruit.com">
+
+
+  <link rel="canonical" href="https://learn.adafruit.com/micropython-basics-esp8266-webrepl/access-webrepl" />
+
+  <meta name="title" property="og:title" content="MicroPython Basics: ESP8266 WebREPL" />
+  <meta name="description" property="og:description" content="Learn how to setup and use MicroPython ESP8266&#39;s WebREPL to program and control a MicroPython board over WiFi." />
+  <meta property="og:type" content="website" />
+  <meta name="image" property="og:image" content="https://cdn-learn.adafruit.com/guides/images/000/001/419/medium800/IMG_5134.jpg" />
+  <meta name="url" property="og:url" content="https://learn.adafruit.com/micropython-basics-esp8266-webrepl/access-webrepl" />
+  <meta name="site_name" property="og:site_name" content="Adafruit Learning System" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "url": "https://learn.adafruit.com/micropython-basics-esp8266-webrepl/access-webrepl",
+      "name": "MicroPython Basics: ESP8266 WebREPL",
+      "description": "Learn how to setup and use MicroPython ESP8266&#39;s WebREPL to program and control a MicroPython board over WiFi.",
+      "publisher": "Adafruit",
+      "datePublished": "2016-08-26T17:27:24-04:00",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://learn.adafruit.com/search?q={search_term}",
+        "query-input": "required name=search_term"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Tony DiCola"
+      }
+    }
+  </script>
+
+
+  <meta name="csrf-param" content="authenticity_token" />
+<meta name="csrf-token" content="f7l19AxdWjpI4IYi8irh_-BImJrdobRau9AdVhZb0izgTf-IccrmFZGL2Xy0G1Iu_pOjNQ6CSqs-uMpv5yH5cg" />
+  <link rel="alternate" type="application/atom+xml" title="ATOM" href="/feed" />
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.rss" />
+  <link rel="stylesheet" href="/assets/application-3f03635d.css" data-turbo-track="reload" media="screen" />
+  <link rel="preload" href="https://cdn-shop.adafruit.com/fonts/proximanova/proximanova-light-webfont.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://cdn-shop.adafruit.com/fonts/proximanova/proximanova-regular-webfont.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://cdn-shop.adafruit.com/fonts/proximanova/proximanova-semibold-webfont.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+  var dataLayer = [];
+  function gtag(){dataLayer.push(arguments);}
+</script>
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-PRPXBQ6');</script>
+  <!-- End Google Tag Manager -->
+
+  <script>
+    gtag('js', new Date());
+  </script>
+
+    <script>
+    gtag("event", "view_item_list", {
+      item_list_id: "1419:8010",
+      item_list_name: "micropython-basics-esp8266-webrepl/access-webrepl",
+      items: [
+  {
+    "item_id": "2821",
+    "item_name": "Adafruit Feather HUZZAH with ESP8266 - Loose Headers",
+    "affiliation": "Featured Product"
+  },
+  {
+    "item_id": "2471",
+    "item_name": "Adafruit HUZZAH ESP8266 Breakout",
+    "affiliation": "Featured Product"
+  },
+  {
+    "item_id": "2282",
+    "item_name": "ESP8266 WiFi Module",
+    "affiliation": "Featured Product"
+  }
+]
+    });
+
+  </script>
+
+
+  <meta name='viewport' content='initial-scale=1, viewport-fit=cover'>
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"> -->
+
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <script>
+    window.rails_env = 'production';
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "url": "https://learn.adafruit.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://learn.adafruit.com/search?q={search_term}",
+        "query-input": "required name=search_term"
+      }
+    }
+  </script>
+    <script src="/assets/application-a53421ab.js" data-turbo-track="reload" type="module"></script>
+</head>
+
+<body class="application pages show production">
+    <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PRPXBQ6"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="outer-wrapper">
+    <div id="inner-wrapper">
+      
+        <div id="messaging-wrapper" class="messages-container" data-load="https://www.adafruit.com/api/multi_message.php"></div>
+
+
+      <a data-turbo="false" class="skip-to-main" href="#main-content-container">Skip to main content</a>
+
+      <header id="adafruit-header" aria-label="Adafruit header">
+  <div id="small-header">
+  <div class="first-row">
+      <nav aria-label="Adafruit applications menu">
+    <ul class="application-links">
+      <li><a aria-label="Adafruit Shop" href="https://www.adafruit.com">Shop</a></li>
+      <li class="selected"><a aria-label="Adafruit Learning System" href="https://learn.adafruit.com">Learn</a></li>
+      <li><a aria-label="Adafruit Blog" href="https://blog.adafruit.com">Blog</a></li>
+      <li><a aria-label="Adafruit Forums and Support" href="https://forums.adafruit.com">Forums</a></li>
+      <li><a aria-label="Adafruit IO, the internet of things" href="https://io.adafruit.com">IO</a></li>
+      <li><a aria-label="Adafruit Youtube Videos" href="https://www.youtube.com/adafruit/live">LIVE!</a></li>
+
+        <li><a aria-label="Adafruit product box subscription" href="https://www.adabox.com">AdaBox</a></li>
+    </ul>
+  </nav>
+
+  </div>
+
+  <div class="second-row">
+    <div class="row-content">
+      <div id="mobile-header-logo">
+        <a href="https://learn.adafruit.com">
+        <img id="small-logo" height="50" width="50" alt="Adafruit Logo" src="/logos/adafruit_logo_small.png?2983815032724608425" />
+</a>      </div>
+
+      <button id="mobile-menu-button" class="c-hamburger c-hamburger--htx">
+        <span>toggle menu</span>
+      </button>
+
+      <div id="mobile-search-wrapper">
+        <form action="https://learn.adafruit.com/search" method="get">
+          <label for="mobile-search" style="display:none;">Search</label>
+
+          <input id="mobile-search" type="text" name="q" autocomplete="off"
+            data-app-id="W9DMM4OTH0"
+            data-app-key="28a76a2b87be38db12283ebda329425a"
+            data-app-index="learn_guides_production"
+            data-app-uri="https://learn.adafruit.com" />
+
+          <button type="submit" aria-label="Submit search"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+
+      <a id="mobile-header-cart" href="https://www.adafruit.com/shopping_cart">
+        <span class="small-cart-count" aria-live="polite">0</span>
+        <i class="fa fa-shopping-cart"></i>
+</a>
+    </div>
+  </div>
+
+  <nav id="small-header-nav">
+    <div id="small-menu">
+      <ul>
+          <li class="account-info">
+            <a href="/users/sign_in">Sign In</a> | <a href="https://accounts.adafruit.com/">Create Account</a>
+          </li>
+        <li><a href="https://adafruit-playground.com">Playground</a></li>
+          <li><a href="/guides/latest">New Guides</a></li>
+          <li><a href="/groups">Series</a></li>
+          <li><a href="https://www.adafruit.com/wishlists">Wishlists</a></li>
+          <li>
+            <a class="random-guide-link" aria-label="View a Random Guide" href="https://learn.adafruit.com/guides/random">
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+       viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<g>
+  <g>
+    <path fill="currentColor" d="M478.578,244.475H278.047c-3.81,0-7.42,0.78-10.829,1.961l56.305-56.305c6.306-6.306,9.759-14.706,9.759-23.64
+      c0-8.935-3.454-17.335-9.759-23.64L190.282,9.609c-12.589-12.611-34.692-12.611-47.281,0L9.759,142.85
+      C3.454,149.156,0,157.556,0,166.491s3.454,17.335,9.759,23.64l133.242,133.242c6.306,6.306,14.683,9.759,23.64,9.759
+      c8.957,0,17.335-3.454,23.64-9.759l56.305-56.305c-1.181,3.409-1.961,7.019-1.961,10.829v200.531
+      c0,18.427,14.995,33.422,33.422,33.422h200.531c18.427,0,33.422-14.995,33.422-33.422V277.897
+      C512,259.47,497.005,244.475,478.578,244.475z M182.394,271.368c-4.345,4.345-10.049,6.506-15.753,6.506
+      s-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,248.552,191.106,262.679,182.394,271.368z M182.394,182.244c-4.345,4.345-10.049,6.506-15.753,6.506
+      c-5.704,0-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,159.428,191.106,173.554,182.394,182.244z M182.394,93.119c-4.345,4.345-10.049,6.506-15.753,6.506
+      c-5.704,0-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,70.303,191.106,84.429,182.394,93.119z M311.469,467.287c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281c12.277,0,22.281,9.982,22.281,22.281C333.75,457.305,323.746,467.287,311.469,467.287z
+       M311.469,333.6c-12.277,0-22.281-9.982-22.281-22.281c0-12.299,10.004-22.281,22.281-22.281c12.277,0,22.281,9.982,22.281,22.281
+      C333.75,323.618,323.746,333.6,311.469,333.6z M378.313,400.444c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281C400.594,390.462,390.59,400.444,378.313,400.444z
+       M445.156,467.287c-12.277,0-22.281-9.982-22.281-22.281c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281
+      C467.438,457.305,457.433,467.287,445.156,467.287z M445.156,333.6c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281C467.438,323.618,457.433,333.6,445.156,333.6z"/>
+  </g>
+</g>
+</svg>
+</a>
+          </li>
+      </ul>
+    </div>
+
+    <div id="mobile-search-results"></div>
+  </nav>
+</div>
+
+
+  <div id="large-header">
+    <nav class="first-row" aria-label="Adafruit main site">
+      <div class="row-content">
+          <nav aria-label="Adafruit applications menu">
+    <ul class="application-links">
+      <li><a aria-label="Adafruit Shop" href="https://www.adafruit.com">Shop</a></li>
+      <li class="selected"><a aria-label="Adafruit Learning System" href="https://learn.adafruit.com">Learn</a></li>
+      <li><a aria-label="Adafruit Blog" href="https://blog.adafruit.com">Blog</a></li>
+      <li><a aria-label="Adafruit Forums and Support" href="https://forums.adafruit.com">Forums</a></li>
+      <li><a aria-label="Adafruit IO, the internet of things" href="https://io.adafruit.com">IO</a></li>
+      <li><a aria-label="Adafruit Youtube Videos" href="https://www.youtube.com/adafruit/live">LIVE!</a></li>
+
+        <li><a aria-label="Adafruit product box subscription" href="https://www.adabox.com">AdaBox</a></li>
+    </ul>
+  </nav>
+
+
+        <div id="account">
+            <span class="sign-out"><a href="/users/sign_in">Sign In</a></span>
+          <div class="cart">
+            <a aria-label="Shopping Cart, 0 items" aria-live="polite" href="https://www.adafruit.com/shopping_cart">
+              <i class="fa fa-shopping-cart"></i> 0
+</a>          </div>
+        </div>
+      </div>
+    </nav>
+
+    <nav class="second-row" aria-label="Adafruit Learn application">
+      <div class="row-content">
+        <div class="left-content">
+          <div id="logo">
+            <a title="Adafruit Learning System" href="https://learn.adafruit.com">
+              <img alt="Adafruit Logo" src="/logos/logo_2x.png?2983815032724608425" />
+</a>          </div>
+          <ul class="main-nav-links">
+            <li class="dropdown with-overlay nav-link">
+              <button class="dropdown-label" aria-haspopup="true">Explore & Learn</button>
+              <div class="dropdown-container">
+                <div class="dropdown-content" tabindex="-1">
+                    <div class="flyout">
+      <div class="three-panels">
+        <div class="first-column">
+          <div class="content-header">
+            <span class="title">Learn Categories</span>
+          </div>
+          <div class="categories">
+            <ul>
+                <li><a href="https://learn.adafruit.com/category/3d-printing">3D Printing</a></li>
+                <li><a href="https://learn.adafruit.com/category/adabox">AdaBox</a></li>
+                <li><a href="https://learn.adafruit.com/category/adafruit-products">Adafruit Products</a></li>
+                <li><a href="https://learn.adafruit.com/category/arduino">Arduino Compatibles</a></li>
+                <li><a href="https://learn.adafruit.com/category/breakout-boards">Breakout Boards</a></li>
+                <li><a href="https://learn.adafruit.com/category/circuit-playground">Circuit Playground</a></li>
+                <li><a href="https://learn.adafruit.com/category/circuitpython">CircuitPython</a></li>
+                <li><a href="https://learn.adafruit.com/category/clue">CLUE</a></li>
+                <li><a href="https://learn.adafruit.com/category/community-support">Community Support</a></li>
+                <li><a href="https://learn.adafruit.com/category/components">Components</a></li>
+                <li><a href="https://learn.adafruit.com/category/crickit">Crickit</a></li>
+                <li><a href="https://learn.adafruit.com/category/customer-projects">Customer &amp; Partner Projects</a></li>
+                <li><a href="https://learn.adafruit.com/category/development-boards">Development Boards</a></li>
+                <li><a href="https://learn.adafruit.com/category/educators">Educators</a></li>
+                <li><a href="https://learn.adafruit.com/category/el">EL Wire/Tape/Panel</a></li>
+                <li><a href="https://learn.adafruit.com/category/feather">Feather</a></li>
+                <li><a href="https://learn.adafruit.com/category/gaming-1">Gaming</a></li>
+            </ul>
+            <ul>
+                  <li><a href="https://learn.adafruit.com/category/hacks">Hacks</a></li>
+                  <li><a href="https://learn.adafruit.com/category/internet-of-things-iot">Internet of Things - IOT</a></li>
+                  <li><a href="https://learn.adafruit.com/category/lcds-and-displays">LCDs &amp; Displays</a></li>
+                  <li><a href="https://learn.adafruit.com/category/leds">LEDs</a></li>
+                  <li><a href="https://learn.adafruit.com/category/machine-learning">Machine Learning</a></li>
+                  <li><a href="https://learn.adafruit.com/category/makecode">MakeCode</a></li>
+                  <li><a href="https://learn.adafruit.com/category/maker-business">Maker Business</a></li>
+                  <li><a href="https://learn.adafruit.com/category/micro-bit">micro:bit</a></li>
+                  <li><a href="https://learn.adafruit.com/category/microcontrollers">Microcontrollers</a></li>
+                  <li><a href="https://learn.adafruit.com/category/programming">Programming</a></li>
+                  <li><a href="https://learn.adafruit.com/category/raspberry-pi">Raspberry Pi</a></li>
+                  <li><a href="https://learn.adafruit.com/category/robotics">Robotics &amp; CNC</a></li>
+                  <li><a href="https://learn.adafruit.com/category/sensors">Sensors</a></li>
+                  <li><a href="https://learn.adafruit.com/category/stemma">STEMMA</a></li>
+                  <li><a href="https://learn.adafruit.com/category/tools">Tools</a></li>
+                  <li><a href="https://learn.adafruit.com/category/trellis">Trellis</a></li>
+                  <li><a href="https://learn.adafruit.com/category/wearables">Wearables</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="middle-column">
+        </div>
+
+        <div class="last-column hide-md">
+          <section class="image-content-card">
+  <img data-src="https://learn.adafruit.com/assets/headlines/stemma-690676c3.jpg" class="lazy" aria-hidden="true" alt="Explore, Groups to get your gears turning" src="data:," />
+
+  <div class="text">
+    <div class="main">
+      <span>Explore</span>
+    </div>
+
+    <div class="tagline">
+      <span>Groups to get your gears turning</span>
+    </div>
+  </div>
+
+  <div class="button">
+    <a title="Groups to get your gears turning, Explore" href="https://learn.adafruit.com/explore">Explore Groups</a>
+  </div>
+</section>
+
+      </div>
+    </div>
+  </div>
+
+                </div>
+              </div>
+            </li>
+
+            <li class="nav-link">
+              <a class="new-guides-link" href="https://learn.adafruit.com/guides/latest">New Guides</a>
+            </li>
+            <li class="nav-link">
+              <a href="https://adafruit-playground.com">Playground</a>
+            </li>
+            <li class="nav-link">
+              <a class="random-guide-link" aria-label="View a Random Guide" href="https://learn.adafruit.com/guides/random">
+  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+       viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<g>
+  <g>
+    <path fill="currentColor" d="M478.578,244.475H278.047c-3.81,0-7.42,0.78-10.829,1.961l56.305-56.305c6.306-6.306,9.759-14.706,9.759-23.64
+      c0-8.935-3.454-17.335-9.759-23.64L190.282,9.609c-12.589-12.611-34.692-12.611-47.281,0L9.759,142.85
+      C3.454,149.156,0,157.556,0,166.491s3.454,17.335,9.759,23.64l133.242,133.242c6.306,6.306,14.683,9.759,23.64,9.759
+      c8.957,0,17.335-3.454,23.64-9.759l56.305-56.305c-1.181,3.409-1.961,7.019-1.961,10.829v200.531
+      c0,18.427,14.995,33.422,33.422,33.422h200.531c18.427,0,33.422-14.995,33.422-33.422V277.897
+      C512,259.47,497.005,244.475,478.578,244.475z M182.394,271.368c-4.345,4.345-10.049,6.506-15.753,6.506
+      s-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,248.552,191.106,262.679,182.394,271.368z M182.394,182.244c-4.345,4.345-10.049,6.506-15.753,6.506
+      c-5.704,0-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,159.428,191.106,173.554,182.394,182.244z M182.394,93.119c-4.345,4.345-10.049,6.506-15.753,6.506
+      c-5.704,0-11.408-2.161-15.753-6.506c-8.712-8.69-8.712-22.816,0-31.506c8.69-8.712,22.816-8.712,31.506,0
+      C191.106,70.303,191.106,84.429,182.394,93.119z M311.469,467.287c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281c12.277,0,22.281,9.982,22.281,22.281C333.75,457.305,323.746,467.287,311.469,467.287z
+       M311.469,333.6c-12.277,0-22.281-9.982-22.281-22.281c0-12.299,10.004-22.281,22.281-22.281c12.277,0,22.281,9.982,22.281,22.281
+      C333.75,323.618,323.746,333.6,311.469,333.6z M378.313,400.444c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281C400.594,390.462,390.59,400.444,378.313,400.444z
+       M445.156,467.287c-12.277,0-22.281-9.982-22.281-22.281c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281
+      C467.438,457.305,457.433,467.287,445.156,467.287z M445.156,333.6c-12.277,0-22.281-9.982-22.281-22.281
+      c0-12.299,10.004-22.281,22.281-22.281s22.281,9.982,22.281,22.281C467.438,323.618,457.433,333.6,445.156,333.6z"/>
+  </g>
+</g>
+</svg>
+</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="right-content">
+            <div class="search-wrapper">
+              <div id="search-info" data-page=""
+                data-app-id="W9DMM4OTH0"
+                data-app-key="28a76a2b87be38db12283ebda329425a"
+                data-app-index="learn_guides_production"
+                data-app-uri="https://learn.adafruit.com"></div>
+              <div id="search"></div>
+              <i class="fa fa-search"></i>
+            </div>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</header>
+
+      <turbo-frame id="flash"></turbo-frame>
+      <main id="main-content">
+        <div id="main-content-container" tabindex="-1">
+
+            <div class="toolbar-primary ">
+    <div class="content">
+      <div class="left-content">
+        <div class="breadcrumbs" aria-label="Breadcrumbs">
+          <a href="https://learn.adafruit.com/"><i class='fa fa-home' role='img' title="Learn home"></i></a>
+
+            <i class="fa fa-chevron-right separator"></i>
+            <a href="/micropython-basics-esp8266-webrepl">MicroPython Basics: ESP8266 WebREPL</a> <i class="fa fa-chevron-right separator"></i> Access WebREPL
+        </div>
+      </div>
+
+      <div class="right-content">
+        
+      </div>
+    </div>
+  </div>
+
+
+          
+
+
+<article id="content-wrapper" lang="en" class="" data-page-id="8010" data-guide-id="1419">
+
+  
+
+  <header aria-label="Guide information" class="title-header">
+  <h1 class="title" aria-label="Guide title">MicroPython Basics: ESP8266 WebREPL</h1>
+  <div class="details">
+      <img alt="Image for user tdicola" class="user-image" src="http://secure.gravatar.com/avatar/6a801672e21a12f28a15f4c896951539?s=100" />
+
+      <div class="metadata">
+          <div class="byline">
+    by
+    <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">Tony DiCola</a>
+
+  </div>
+
+        <div class="updated">
+              published August 26, 2016, last updated August 26, 2016
+
+        </div>
+        <div class="small">
+          posted in   <a href="/category/microcontrollers">Microcontrollers</a>/
+<a href="/category/micropython">MicroPython</a>
+  <a href="/category/programming">Programming</a>/
+<a href="/category/micropython-slash-circuitpython">MicroPython / CircuitPython</a>
+
+        </div>
+      </div>
+
+    <span class="right-content" role="region" aria-live="polite">
+      <div class="badges"></div>
+      <div class="buttons">
+
+        <span id="guide-favorite">
+  <span data-controller="modals">
+    <a data-action="click-&gt;modals#show" class="bg-btn-secondary" aria-label="Select to Save this guide." href="/guides/1419/favorites">
+      <i class="fa fa-bookmark-o"></i> Save
+</a>    <div class="dialog-container modal"
+     id="favorites-modal"
+     data-modals-target="modal"
+     aria-labelledby="dialog-title"
+     aria-hidden="true">
+  <div class="dialog-overlay" data-a11y-dialog-hide></div>
+  <div class="dialog-content dialog-small">
+    <div class="dialog-header">
+      <div>
+      <h5 class="dialog-title">New Favorite</h5>
+      </div>
+      <a href="#" class="dialog-close" data-a11y-dialog-hide="favorites-modal" aria-label="Close this dialog window">&times;</a>
+    </div>
+    <div class="dialog-body">
+        <p>Please <a href="https://accounts.adafruit.com/users/sign_in">sign in</a> to include this guide in your list of favorites.</p>
+        <p>You will be redirected back to this guide once you <a href="https://accounts.adafruit.com/users/sign_in">sign in</a>, and can then save this guide as one of your favorites.</p>
+    </div>
+    <div class="dialog-footer">
+      <a href="#" class="dialog-close" data-a11y-dialog-hide="favorites-modal" aria-label="Close this dialog window">Close</a>
+    </div>
+  </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+
+  </span>
+</span>
+
+
+          <a class="bg-btn-secondary" href="https://cdn-learn.adafruit.com/downloads/pdf/micropython-basics-esp8266-webrepl.pdf">
+              <i class="fa fa-download"></i> Download
+</a>
+      </div>
+    </span>
+  </div>
+</header>
+
+
+  <div class="left-sidebar-layout" role="region" aria-label="Page content">
+    <div class="sidebar">
+  <nav aria-label="Guide navigation">
+      <div class="data-group">
+        <ul class="nested-page-list" aria-label="Guide pages">
+           <li class='parent '>
+
+        <a class="published" href="/micropython-basics-esp8266-webrepl/overview">Overview</a>
+
+
+</li>
+ <li class='parent active'>
+
+        <a class="published" href="/micropython-basics-esp8266-webrepl/access-webrepl">Access WebREPL</a>
+
+
+</li>
+ <li class='parent '>
+
+        <a class="published" href="/micropython-basics-esp8266-webrepl/send-and-get-files">Send &amp; Get Files</a>
+
+
+</li>
+
+        </ul>
+
+        <div class="single-page-spacer"></div>
+        <ul class="nested-page-list" aria-label="Guide resources">
+          <li>
+              <a href="/micropython-basics-esp8266-webrepl?view=all">Single page</a>
+          </li>
+          <li>
+                <div id="feedback_page_8010">
+      <a data-turbo-stream="true" class="feedback-link" title="Feedback? Corrections?" rel="nofollow" href="/feedback/new?page_id=8010">
+            Feedback?  Corrections?
+</a>    </div>
+
+          </li>
+        </ul>
+      </div>
+
+    
+
+
+      <section class="list-with-header">
+        <div class="list-header">
+          Featured Products
+          <span class="view-all">
+              <a class="featured-products-link" href="/micropython-basics-esp8266-webrepl/featured_products">view all</a>
+          </span>
+        </div>
+
+        <ul class="small-product-list">
+          
+
+  <li class="small-product-content-card">
+    <input type="hidden" name="product_analytics_2821" id="product_analytics_2821" value="{
+  &quot;item_list_id&quot;: 2130,
+  &quot;item_list_name&quot;: &quot;adafruit-io-air-quality-monitor&quot;,
+  &quot;items&quot;: {
+    &quot;item_id&quot;: 2821,
+    &quot;item_name&quot;: &quot;Adafruit Feather HUZZAH with ESP8266 - Loose Headers&quot;,
+    &quot;affiliation&quot;: &quot;Featured Product&quot;
+  }
+}" class="product-json" autocomplete="off" />
+
+    <div class="product-image">
+        <img class='image-preview product-asset' src='https://cdn-shop.adafruit.com/640x480/2821-06.jpg' alt='Angled shot of black, rectangular WiFi development board.' data-error='/assets/missing%2Fmissing.png' />
+
+    </div>
+
+    <div class="product-details">
+      <div>
+        <a class="product-title" href="https://www.adafruit.com/product/2821">Adafruit Feather HUZZAH with ESP8266 - Loose Headers</a>
+      </div>
+
+        <div class="product-price">$14.95</div>
+
+      <a id="2821-product" class="product-buy btn-primary " data-pid="2821" data-qty="1" data-name="Adafruit Feather HUZZAH with ESP8266 - Loose Headers" target="_blank" aria-live="polite" rel="noopener noreferrer" href="https://www.adafruit.com/product/2821">Add  to Cart</a>
+    </div>
+  </li>
+
+
+  <li class="small-product-content-card">
+    <input type="hidden" name="product_analytics_2471" id="product_analytics_2471" value="{
+  &quot;item_list_id&quot;: 1433,
+  &quot;item_list_name&quot;: &quot;micropython-hardware-digital-i-slash-o&quot;,
+  &quot;items&quot;: {
+    &quot;item_id&quot;: 2471,
+    &quot;item_name&quot;: &quot;Adafruit HUZZAH ESP8266 Breakout&quot;,
+    &quot;affiliation&quot;: &quot;Featured Product&quot;
+  }
+}" class="product-json" autocomplete="off" />
+
+    <div class="product-image">
+        <img class='image-preview product-asset' src='https://cdn-shop.adafruit.com/640x480/2471-06.jpg' alt='Angled shot of a Adafruit HUZZAH ESP8266 Breakout. ' data-error='/assets/missing%2Fmissing.png' />
+
+    </div>
+
+    <div class="product-details">
+      <div>
+        <a class="product-title" href="https://www.adafruit.com/product/2471">Adafruit HUZZAH ESP8266 Breakout</a>
+      </div>
+
+        <div class="product-price">$9.95</div>
+
+      <a id="2471-product" class="product-buy btn-primary " data-pid="2471" data-qty="1" data-name="Adafruit HUZZAH ESP8266 Breakout" target="_blank" aria-live="polite" rel="noopener noreferrer" href="https://www.adafruit.com/product/2471">Add  to Cart</a>
+    </div>
+  </li>
+
+        </ul>
+      </section>
+
+  </nav>
+</div>
+
+
+    <div>
+      <div class="badges headline-badges">
+            <div class="badge favorites " title="Saves">
+              25
+            </div>
+
+
+          <div class="badge skill-level" title="Skill Level">
+            Beginner
+          </div>
+
+          <div class="badge skill-level" title="Guide Type">
+            Skill guide
+          </div>
+
+        <turbo-frame id="display_reactions"></turbo-frame>
+      </div>
+
+        <h2 class="title" aria-label="Page title">
+          <span id="access-webrepl">Access WebREPL</span>
+        </h2>
+
+        <div class="page-content">
+            <div class="" role="region" aria-label="Page content">
+      <div class="text-element">
+  <h1>
+<div class="anchor-anchor">
+<a href="#enable-webrepl-2121036" class="anchor-link"><span class="fa fa-link"></span></a><span id="enable-webrepl-2121036" class="anchor-link-target"></span>
+</div>Enable WebREPL</h1>
+<p>The first step to using the WebREPL is to make sure it is available and enabled on your ESP8266 board.  As of the latest <strong>1.8.6</strong> MicroPython releases the WebREPL is <strong>not</strong> <strong>enabled</strong> by default and must be switched on with a one time command run through the serial port.  Make sure you're using <a href="http://micropython.org/download">MicroPython 1.8.6 or higher</a> to follow the below instructions.</p>
+<p>Check out this <a href="../../../../micropython-basics-how-to-load-micropython-on-a-board/esp8266">handy guide on loading MicroPython firmware</a> if you aren't sure how to load firmware.</p>
+<p>To enable the WebREPL connect to the board using its serial connection and run the following command as <a href="https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/repl.html#webrepl-a-prompt-over-wifi">mentioned in the documentation</a>:</p>
+</div>
+
+      <div class="code-element" aria-label="Code element">
+  <div class="download-code ">
+      <a data-turbo="false" class="download-button" href="https://learn.adafruit.com/elements/2121037/download">
+        <i class="fa fa-cloud"></i> Download File
+</a>    <div class="code-copy-container">
+      <a href="#" class="code-copy-button"><i class="fa fa-clipboard"></i> Copy Code</a>
+    </div>
+  </div>
+  <pre class="code-text-only" style="display: none;">import webrepl_setup</pre>
+  <pre class="prettyprint
+              
+              
+              ">import webrepl_setup</pre>
+
+</div>
+
+      <div class="text-element">
+  <p>You will be prompted to enable or disable the WebREPL, and to set a password.  Enter your choices for both prompts then press <strong>y</strong> when prompted to save and reboot.</p>
+</div>
+
+        <div class="element image-element" aria-label="Image: micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png">
+    <a href="/assets/37676">
+        <img class="37676-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/037/676/small360/micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png?1480714116 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/037/676/medium640/micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png?1480714116 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/037/676/medium800/micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png?1480714116 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/037/676/large1024/micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png?1480714116 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/037/676/medium800/micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png?1480714116"
+             alt="micropython_Screen_Shot_2016-12-02_at_1.27.43_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <h1>
+<div class="anchor-anchor">
+<a href="#access-webrepl-2121040" class="anchor-link"><span class="fa fa-link"></span></a><span id="access-webrepl-2121040" class="anchor-link-target"></span>
+</div>Access WebREPL</h1>
+<p>Once the WebREPL is running you can connect to it over the ESP8266's WiFi radio.  If the board isn't connected already to a wireless access point then it will create one which you can connect to from your computer.</p>
+<p>To connect to the board's WiFi network look for a WiFi network advertised as <strong>MicroPython-*</strong>:</p>
+    
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png">
+    <a href="/assets/35129">
+        <img class="35129-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/129/small360/microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png?1472175168 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/129/medium640/microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png?1472175168 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/129/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png?1472175168 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/129/large1024/microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png?1472175168 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/129/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png?1472175168"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_6.31.17_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>Where the <strong>*</strong> is the a set of numbers and letters unique to each ESP8266 board (based on its MAC address).</p>
+<p>You will need to enter the password <strong>micropythoN</strong> to connect to the board's access point (<strong>the N is capitalized!</strong>).  If you have trouble see more details on <a href="http://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#wifi">connecting to the board's WiFi network</a> in the official documentation.</p>
+<p>Next you'll need to have available the WebREPL client web page on your machine.  You can either <a href="http://micropython.org/webrepl/">access the client webpage from micropython.org</a> (assuming your computer can be connected to both the internet and your MicroPython board's network) or <a href="https://github.com/micropython/webrepl">download it from its home on GitHub</a> by clicking the button below and extracting the files:</p>
+    
+</div>
+
+      <div id="element-2121043" class="button-element" data-github-release="" aria-label="Button Download MicroPython WebREPL Client">
+
+  <a href="https://github.com/micropython/webrepl/archive/master.zip" class="btn btn-large btn-block btn-primary" target="_self" rel="noopener noreferrer" data-zip-folder="">Download MicroPython WebREPL Client</a>
+</div>
+
+      <div class="text-element">
+  
+      <p>If you download the WebREPL client extract the files and open <strong>webrepl.html</strong> in your browser (Firefox and Chrome are the officially supported browsers at this time).</p>
+<p>Note you can't access the WebREPL client page directly from the ESP8266 board.  To save space in flash memory the ESP8266 only provides a websocket interface and not the actual client webpage.  You'll need to download the WebREPL client page ahead of time or access it from the internet.</p>
+<p>Once the WebREPL client page is loaded you should see something like the following (as of ~August 2016, be aware the WebREPL is under active development and might change how it looks over time!):</p>
+    
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png">
+    <a href="/assets/35130">
+        <img class="35130-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/130/small360/microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png?1472175855 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/130/medium640/microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png?1472175855 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/130/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png?1472175855 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/130/large1024/microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png?1472175855 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/130/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png?1472175855"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_6.41.48_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  <p><strong>Now make sure your computer is connected to the ESP8266's WiFi network</strong>, then click the <strong>Connect</strong> button (using the default address of <strong>ws://192.168.4.1:8266/</strong> next to the button).</p>
+<p>Once connected the WebREPL should prompt you to enter the password you set while running the webrepl_setup command earlier.  Enter the password that you set to continue.</p>
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png">
+    <a href="/assets/35133">
+        <img class="35133-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/133/small360/microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png?1472176351 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/133/medium640/microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png?1472176351 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/133/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png?1472176351 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/133/large1024/microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png?1472176351 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/133/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png?1472176351"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_6.48.33_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>Try entering Python code at the REPL to see the output of it running.  The WebREPL should function just like the serial REPL so you can use it to experiment with MicroPython, run code you've loaded on the board, and more:</p>
+    
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png">
+    <a href="/assets/35134">
+        <img class="35134-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/134/small360/microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png?1472176427 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/134/medium640/microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png?1472176427 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/134/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png?1472176427 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/134/large1024/microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png?1472176427 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/134/medium800/microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png?1472176427"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_6.48.50_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>That's all there is to accessing the WebREPL from the ESP8266's WiFi network!</p>
+    
+</div>
+
+      <div class="text-element">
+  
+      <h1>
+<div class="anchor-anchor">
+<a href="#access-webrepl-from-other-wifi-networks-2121051" class="anchor-link"><span class="fa fa-link"></span></a><span id="access-webrepl-from-other-wifi-networks-2121051" class="anchor-link-target"></span>
+</div>Access WebREPL From Other WiFi Networks</h1>
+<p>Accessing the WebREPL over the ESP8266's own WiFi access point like above is handy if there's no router or other WiFi network available.  However if you do have access to a WiFi network you can instead connect the ESP8266 to this network and access the WebREPL from any other machine on the network.  This makes it easier to use the WebREPL without losing access to the internet or your own WiFi network on a laptop that can only be connected to one WiFi network at a time.</p>
+<p>To use the WebREPL on another WiFi network you'll first need to connect the ESP8266 to the WiFi network.  The <a href="https://docs.micropython.org/en/latest/esp8266/esp8266/quickref.html#networking">MicroPython ESP8266 documentation shows</a> a few simple commands to connect to a network.  From the serial REPL (don't use the WebREPL since you'll lose access when the commands change to a different WiFi network!) run the following commands:</p>
+    
+</div>
+
+      <div class="code-element" aria-label="Code element">
+  <div class="download-code ">
+      <a data-turbo="false" class="download-button" href="https://learn.adafruit.com/elements/2121052/download">
+        <i class="fa fa-cloud"></i> Download File
+</a>    <div class="code-copy-container">
+      <a href="#" class="code-copy-button"><i class="fa fa-clipboard"></i> Copy Code</a>
+    </div>
+  </div>
+  <pre class="code-text-only" style="display: none;">import network
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect('ssid', 'password')</pre>
+  <pre class="prettyprint
+              
+              
+              ">import network
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect('ssid', 'password')</pre>
+
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png">
+    <a href="/assets/35135">
+        <img class="35135-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/135/small360/microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png?1472193301 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/135/medium640/microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png?1472193301 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/135/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png?1472193301 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/135/large1024/microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png?1472193301 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/135/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png?1472193301"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_11.26.50_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      
+      <p>Where <strong>ssid</strong> is the name of the WiFi access point SSID, and <strong>password</strong> is the password required to use the access point (try an empty string '' if no password is required).</p>
+<p>After a moment the ESP8266 should connect to the WiFi network.  You can run the ifconfig function to check that the board has been assigned an IP address and is on the network:</p>
+    
+    
+</div>
+
+      <div class="code-element" aria-label="Code element">
+  <div class="download-code ">
+      <a data-turbo="false" class="download-button" href="https://learn.adafruit.com/elements/2121055/download">
+        <i class="fa fa-cloud"></i> Download File
+</a>    <div class="code-copy-container">
+      <a href="#" class="code-copy-button"><i class="fa fa-clipboard"></i> Copy Code</a>
+    </div>
+  </div>
+  <pre class="code-text-only" style="display: none;">wlan.ifconfig()</pre>
+  <pre class="prettyprint
+              
+              
+              ">wlan.ifconfig()</pre>
+
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png">
+    <a href="/assets/35136">
+        <img class="35136-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/136/small360/microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png?1472193543 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/136/medium640/microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png?1472193543 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/136/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png?1472193543 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/136/large1024/microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png?1472193543 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/136/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png?1472193543"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_11.27.25_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>Notice the first result from the ifconfig call is the IP address assigned to the ESP8266 (192.168.1.207 in this example, but it will differ depending on your WiFi network).  If you don't see an IP address then something is wrong with the WiFi configuration or connection to the network.  Double check the SSID and password are correct and try the connect call again.</p>
+<p><strong>One important thing to note is that the ESP8266 will always remember the last WiFi network it used and attempt to connect automatically on reboot.</strong>  This is handy since it means when the ESP8266 boots up it will automatically connect to the last network without you having to run the commands above again.  The board will only remember the last network though and not an entire history of older networks.</p>
+<p>Once the board is connected to the WiFi network enable the WebREPL (as described in the previous section) and notice it prints two IP addresses that it's listening on:</p>
+    
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png">
+    <a href="/assets/35137">
+        <img class="35137-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/137/small360/microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png?1472193852 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/137/medium640/microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png?1472193852 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/137/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png?1472193852 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/137/large1024/microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png?1472193852 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/137/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png?1472193852"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_11.27.51_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>In this case the WebREPL is listening on 192.168.4.1 which is the ESP8266's access point, and 192.168.1.207 which is the IP address of the ESP8266 on a WiFi network.</p>
+<p>Now open the WebREPL and use the IP address of the board on your network instead of the 192.168.4.1 default:</p>
+    
+</div>
+
+        <div class="element image-element" aria-label="Image: microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png">
+    <a href="/assets/35138">
+        <img class="35138-asset"
+             srcset="https://cdn-learn.adafruit.com/assets/assets/000/035/138/small360/microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png?1472194039 360w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/138/medium640/microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png?1472194039 640w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/138/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png?1472194039 800w,
+               https://cdn-learn.adafruit.com/assets/assets/000/035/138/large1024/microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png?1472194039 1024w"
+              sizes="(max-width: 360px) 360px, (max-width: 640px) 640px, (max-width: 800px) 800px, 1024px"
+             src="https://cdn-learn.adafruit.com/assets/assets/000/035/138/medium800/microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png?1472194039"
+             alt="microcontrollers_Screen_Shot_2016-08-25_at_11.46.55_PM.png" />
+      <span class="image-expand"><i class="fa fa-search-plus"></i></span>
+</a>  </div>
+
+      <div class="text-element">
+  
+      <p>Once connected you can use the WebREPL just as you were using it on the ESP8266's WiFi network!</p>
+<p>Note if you're connecting the board to a WiFi network it is a very smart idea to <a href="../../../../micropython-basics-load-files-and-run-code/disable-esp8266-debug-output">disable debug output</a> since connecting and disconnecting WiFi network and can spew debug output to the serial REPL.  If the board can't connect to the WiFi network, like if you move it to a different location away from the network, you'll see a constant stream of debug output as the board tries and fails to reconnect to the network.  This debug output can cause problems with tools like ampy that try to use the board's serial REPL and don't expect the debug output.</p>
+    
+</div>
+
+  </div>
+
+
+          <div class="page-last-updated">
+  <p>Text editor powered by <a href="https://www.tiny.cloud/">tinymce</a>.</p>
+</div>
+
+        </div>
+
+        <div class="page-navigation">
+            <a class="previous-page btn-primary large" aria-label="Previous page" href="/micropython-basics-esp8266-webrepl/overview">
+              <i class="fa fa-chevron-left"></i>&nbsp;Overview
+</a>            <a class="next-page btn-primary large" aria-label="Next page" href="/micropython-basics-esp8266-webrepl/send-and-get-files">
+              Send &amp; Get Files&nbsp;<i class="fa fa-chevron-right"></i>
+</a>        </div>
+    </div>
+  </div>
+</article>
+
+    <div class="related-guides-wrapper">
+  <section class="content-card-group-preview">
+  <div class="group-preview-headline">
+    <div class="title">
+      Related Guides
+    </div>
+
+    
+  </div>
+
+  <a class="scroll-back"><i class="fa fa-angle-left"></i></a>
+  <div class="content-card-group-container">
+    <div class="content-card-group">
+      <!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/adafruit-feather-huzzah-esp8266">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/170/medium640/smalldemo.jpg?1520543713" aria-hidden="true" alt="Adafruit Feather HUZZAH ESP8266" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/adafruit-feather-huzzah-esp8266">Adafruit Feather HUZZAH ESP8266</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/adafruit2">
+        <span class="name">lady ada</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              295
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+            <div class="badge updated">
+              Updated
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/add-boards-arduino-v164">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/024/medium640/Screen_Shot_2015-05-07_at_8.19.13_AM.png?1520543284" aria-hidden="true" alt="Adding Third Party Boards to the Arduino v1.6.4+ IDE" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/add-boards-arduino-v164">Adding Third Party Boards to the Arduino v1.6.4+ IDE</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/uniontownlabs">
+        <span class="name">Todd Treece</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              50
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+            <div class="badge updated">
+              Updated
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/micropython-hardware-analog-i-o">
+        <div class="image-container">
+              <video class="video-preview lazy" preload="auto" muted="muted" loop="loop" playsinline poster="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/434/medium640thumb/2016-09-06_03_18_22.gif?1535575122" data-error="/assets/missing%2Fmissing.png" 'aria-hidden'=true>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/434/medium640mp4/2016-09-06_03_18_22.mp4?1535575122"></data-src>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/434/medium640webm/2016-09-06_03_18_22.webm?1535575122" type="video/webm; codecs=vp8,vorbis"></data-src>
+        Your browser does not support the video tag. This links to the guide MicroPython Hardware: Analog I/O.
+    </video>
+  <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/434/medium640thumb/2016-09-06_03_18_22.gif?1535575122" aria-hidden="true" alt="MicroPython Hardware: Analog I/O" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/micropython-hardware-analog-i-o">MicroPython Hardware: Analog I/O</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">
+        <span class="name">Tony DiCola</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              23
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/circuitpython-totp-otp-2fa-authy-authenticator-friend">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/885/medium640/pyotp.jpg?1514694419" aria-hidden="true" alt="CircuitPython 2FA TOTP Authentication Friend" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/circuitpython-totp-otp-2fa-authy-authenticator-friend">CircuitPython 2FA TOTP Authentication Friend</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/adafruit2">
+        <span class="name">lady ada</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              45
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/micropython-basics-how-to-load-micropython-on-a-board">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/402/medium640/IMG_5115.jpg?1535124872" aria-hidden="true" alt="A selection of MicroPython compatible boards" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/micropython-basics-how-to-load-micropython-on-a-board">MicroPython Basics: How to Load MicroPython on a Board</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">
+        <span class="name">Tony DiCola</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              82
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/mac-address-finder">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/491/medium640/macaddr.jpg?1515090104" aria-hidden="true" alt="MAC Address Finder" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/mac-address-finder">MAC Address Finder</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/rdear4">
+        <span class="name">Ron Dear</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              29
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/AT-Hand-Raiser">
+        <div class="image-container">
+              <video class="video-preview lazy" preload="auto" muted="muted" loop="loop" playsinline poster="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/251/medium640thumb/Light.gif?1541198757" data-error="/assets/missing%2Fmissing.png" 'aria-hidden'=true>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/251/medium640mp4/Light.mp4?1541198757"></data-src>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/251/medium640webm/Light.webm?1541198757" type="video/webm; codecs=vp8,vorbis"></data-src>
+        Your browser does not support the video tag. This links to the guide CircuitPython Powered AT Hand-Raiser.
+    </video>
+  <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/251/medium640thumb/Light.gif?1541198757" aria-hidden="true" alt="CircuitPython Powered AT Hand-Raiser" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/AT-Hand-Raiser">CircuitPython Powered AT Hand-Raiser</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/atmakers">
+        <span class="name">Bill Binko</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              19
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/adafruit-io-home-security">
+        <div class="image-container">
+              <video class="video-preview lazy" preload="auto" muted="muted" loop="loop" playsinline poster="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/156/medium640thumb/disarm_system.gif?1536091415" data-error="/assets/missing%2Fmissing.png" 'aria-hidden'=true>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/156/medium640mp4/disarm_system.mp4?1536091415"></data-src>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/156/medium640webm/disarm_system.webm?1536091415" type="video/webm; codecs=vp8,vorbis"></data-src>
+        Your browser does not support the video tag. This links to the guide Adafruit IO Home: Security .
+    </video>
+  <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/156/medium640thumb/disarm_system.gif?1536091415" aria-hidden="true" alt="Adafruit IO Home: Security " class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/adafruit-io-home-security">Adafruit IO Home: Security </a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/brubell">
+        <span class="name">Brent Rubell</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              77
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/crickit-and-adafruitio">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/095/medium640/keyimage.jpg?1531587036" aria-hidden="true" alt="Using Crickit and Adafruit IO together" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/crickit-and-adafruitio">Using Crickit and Adafruit IO together</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/dastels">
+        <span class="name">Dave Astels</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              23
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/micropython-hardware-i2c-devices">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/442/medium640/IMG_5254.jpg?1535126454" aria-hidden="true" alt="MicroPython Hardware: I2C Devices" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/micropython-hardware-i2c-devices">MicroPython Hardware: I2C Devices</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">
+        <span class="name">Tony DiCola</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              23
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/easy-alexa-or-echo-control-of-your-esp8266-huzzah">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/518/medium640/echo.png?1520544451" aria-hidden="true" alt="Easy Alexa (Echo) Control of your ESP8266 Huzzah" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/easy-alexa-or-echo-control-of-your-esp8266-huzzah">Easy Alexa (Echo) Control of your ESP8266 Huzzah</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/adafruit2">
+        <span class="name">lady ada</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              87
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/smart-toilet-light">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/266/medium640/DSC04616.jpg?1535067523" aria-hidden="true" alt="Smart Toilet Light" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/smart-toilet-light">Smart Toilet Light</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">
+        <span class="name">Tony DiCola</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              23
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/automatic-twitch-on-air-sign">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/253/medium640/IMG_4598.JPG?1515089962" aria-hidden="true" alt="Automatic Twitch On-Air Sign" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/automatic-twitch-on-air-sign">Automatic Twitch On-Air Sign</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/adafruit2">
+        <span class="name">lady ada</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              21
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/diy-esp8266-home-security-with-lua-and-mqtt">
+        <div class="image-container">
+            <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/331/medium640/security_system_001.jpeg?1535067726" aria-hidden="true" alt="DIY ESP8266 Home Security with Lua and MQTT" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/diy-esp8266-home-security-with-lua-and-mqtt">DIY ESP8266 Home Security with Lua and MQTT</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/hukuzatuna">
+        <span class="name">Philip Moyer</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              107
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/customizable-reusable-pinata">
+        <div class="image-container">
+              <video class="video-preview lazy" preload="auto" muted="muted" loop="loop" playsinline poster="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/480/medium640thumb/IMG_3084.2019-03-29_11_54_01.gif?1553878384" data-error="/assets/missing%2Fmissing.png" 'aria-hidden'=true>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/480/medium640mp4/IMG_3084.2019-03-29_11_54_01.mp4?1553878384"></data-src>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/480/medium640webm/IMG_3084.2019-03-29_11_54_01.webm?1553878384" type="video/webm; codecs=vp8,vorbis"></data-src>
+        Your browser does not support the video tag. This links to the guide Drama Piñata.
+    </video>
+  <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/002/480/medium640thumb/IMG_3084.2019-03-29_11_54_01.gif?1553878384" aria-hidden="true" alt="Drama Piñata" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/customizable-reusable-pinata">Drama Piñata</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/danowall">
+        <span class="name">Dano Wall</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              10
+            </div>
+
+          <div class="badge skill-level">
+            Beginner
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Update templates/guides/guide.mustache in tandom -->
+<div class="guide-preview content-card">
+  <div class="preview-content">
+      <a aria-hidden="true" href="/micropython-hardware-led-backpacks-and-featherwings">
+        <div class="image-container">
+              <video class="video-preview lazy" preload="auto" muted="muted" loop="loop" playsinline poster="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/490/medium640thumb/2016-11-01_21_36_43.gif?1535579814" data-error="/assets/missing%2Fmissing.png" 'aria-hidden'=true>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/490/medium640mp4/2016-11-01_21_36_43.mp4?1535579814"></data-src>
+        <data-src src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/490/medium640webm/2016-11-01_21_36_43.webm?1535579814" type="video/webm; codecs=vp8,vorbis"></data-src>
+        Your browser does not support the video tag. This links to the guide CircuitPython Hardware: LED Backpacks &amp; FeatherWings.
+    </video>
+  <img data-src="https://cdn-learn.adafruit.com/guides/cropped_images/000/001/490/medium640thumb/2016-11-01_21_36_43.gif?1535579814" aria-hidden="true" alt="CircuitPython Hardware: LED Backpacks &amp; FeatherWings" class="image-preview lazy" src="data:," />
+
+        </div>
+</a>
+    <div class="bottom-section">
+      <div class="content">
+        <a class="title" aria-label="Guide title" href="/micropython-hardware-led-backpacks-and-featherwings">CircuitPython Hardware: LED Backpacks &amp; FeatherWings</a>
+            <div class="author">
+      By
+      <a aria-label="Guide author" data-turbo="false" href="/u/tdicola">
+        <span class="name">Tony DiCola</span>
+</a>    </div>
+
+
+        <div class="badges">
+            <div class="badge favorites " title="Saves">
+              30
+            </div>
+
+          <div class="badge skill-level">
+            Intermediate
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <a class="scroll-forward"><i class="fa fa-angle-right"></i></a>
+</section>
+
+</div>
+
+
+
+
+<div class="dialog-container modal"
+     id="create-wishlist-modal"
+     data-modals-target="modal"
+     aria-labelledby="dialog-title"
+     aria-hidden="true">
+  <div class="dialog-overlay" data-a11y-dialog-hide></div>
+  <div class="dialog-content">
+    <div class="dialog-header">
+      <h5 class="dialog-title">Create Wishlist</h5>
+      <a href="#" class="dialog-close" data-a11y-dialog-hide="create-wishlist-modal" aria-label="Close this dialog window">&times;</a>
+    </div>
+    <form>
+      <div class="dialog-body">
+        <div class="form-group">
+          <label for="wishlist_title">Title</label>
+          <input type="text" name="wishlist_title" id="wishlist_title" />
+        </div>
+
+        <div class="form-group">
+          <label for="wishlist_description">Description</label>
+          <textarea name="wishlist_description" id="wishlist_description">
+</textarea>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <input type="submit" name="commit" value="Create Wishlist" class="btn-primary" id="create-wishlist" data-disable-with="Create Wishlist" />
+        <a href="#" class="dialog-close" data-a11y-dialog-hide="create-wishlist-modal" aria-label="Close this dialog window">Close</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+        </div>
+
+        <div id="search-container">
+  <div class="toolbar-primary">
+    <div class="content">
+      <div class="left-content">
+        <div class="breadcrumbs">
+          <a href="https://learn.adafruit.com" aria-label="Home page"><i class='fa fa-home'></i></a>
+          <i class="fa fa-chevron-right separator"></i> Search <i class="fa fa-chevron-right separator"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sub-header">
+    <div class="header-intro">
+      <h1 class="title">Search</h1>
+    </div>
+
+    <div class="header-main-content-wrapper">
+      <div class="header-main-content">
+        <div id="search-refinements" class="breakdown">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-content left-sidebar-layout">
+    <div>
+      <div class="facets-wrapper">
+        <h5 class="search-refinement-header">Categories</h5>
+        <div id="search-categories"></div>
+      </div>
+    </div>
+
+    <div>
+      <div id="search-results" class="search-content-card-group"></div>
+
+      <div id="search-pagination" class="pagination"></div>
+    </div>
+  </div>
+</div>
+
+
+        <div id="remote-modal-wrapper"></div>
+        <div id='main-content-overlay'></div>
+      </main>
+        <footer id="adafruit-footer">
+    <div class="footer-container">
+      <div class="application-support-link">
+        <div>
+          <ul>
+            <li>
+              <a href="https://www.adafruit.com/contact_us">Contact Us</a>
+            </li>
+            <li>
+              <a href="https://forums.adafruit.com/">Tech Support Forums</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/faq">FAQs</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/shippinginfo">Shipping &amp; Returns</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/free">Freebies</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/terms_of_service">Terms of Service</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/privacy">Privacy &amp; Legal</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/accessibility">Website Accessibility</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <ul>
+            <li>
+              <a href="https://www.adafruit.com/about">About Us</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/press">Press</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/educators">Educators</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/distributors">Distributors</a>
+            </li>
+            <li>
+              <a href="https://jobs.adafruit.com">Jobs</a>
+            </li>
+            <li>
+              <a href="https://www.adafruit.com/category/14">Gift Cards</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <aside>
+        <div class="quote">"When you destroy art, you make it stronger"</div>
+        <div class="quote-attribution"><a href="https://en.wikipedia.org/wiki/Jens_Galschi%C3%B8t">Jens Galschiot</a></div>
+      </aside>
+    </div>
+    <div class="footer-container bottom">
+      <a title="About Adafruit" id="footer-logo" href="https://learn.adafruit.com">
+        <img alt="Adafruit Logo" src="/logos/adafruit_logo_small.png?2983815032724608425" />
+</a>
+      <div class="social-links">
+        <a href="https://www.instagram.com/adafruit/" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+
+        <a href="https://twitter.com/adafruit/" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+
+        <a class="mastodon-logo" href="https://mastodon.cloud/@adafruit" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Mastodon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216.4144 232.00976"><path class="logo" d="M211.80734 139.0875c-3.18125 16.36625-28.4925 34.2775-57.5625 37.74875-15.15875 1.80875-30.08375 3.47125-45.99875 2.74125-26.0275-1.1925-46.565-6.2125-46.565-6.2125 0 2.53375.15625 4.94625.46875 7.2025 3.38375 25.68625 25.47 27.225 46.39125 27.9425 21.11625.7225 39.91875-5.20625 39.91875-5.20625l.8675 19.09s-14.77 7.93125-41.08125 9.39c-14.50875.7975-32.52375-.365-53.50625-5.91875C9.23234 213.82 1.40609 165.31125.20859 116.09125c-.365-14.61375-.14-28.39375-.14-39.91875 0-50.33 32.97625-65.0825 32.97625-65.0825C49.67234 3.45375 78.20359.2425 107.86484 0h.72875c29.66125.2425 58.21125 3.45375 74.8375 11.09 0 0 32.975 14.7525 32.975 65.0825 0 0 .41375 37.13375-4.59875 62.915" fill="currentColor"/><path d="M177.50984 80.077v60.94125h-24.14375v-59.15c0-12.46875-5.24625-18.7975-15.74-18.7975-11.6025 0-17.4175 7.5075-17.4175 22.3525v32.37625H96.20734V85.42325c0-14.845-5.81625-22.3525-17.41875-22.3525-10.49375 0-15.74 6.32875-15.74 18.7975v59.15H38.90484V80.077c0-12.455 3.17125-22.3525 9.54125-29.675 6.56875-7.3225 15.17125-11.07625 25.85-11.07625 12.355 0 21.71125 4.74875 27.8975 14.2475l6.01375 10.08125 6.015-10.08125c6.185-9.49875 15.54125-14.2475 27.8975-14.2475 10.6775 0 19.28 3.75375 25.85 11.07625 6.36875 7.3225 9.54 17.22 9.54 29.675" fill="#000"/></svg></a>
+
+        <a href="https://www.facebook.com/adafruitindustries" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+
+        <a href="https://www.youtube.com/adafruit" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on YouTube"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+
+        <a href="https://github.com/adafruit" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Github"><i class="fa fa-github" aria-hidden="true"></i></a>
+
+        <a class="tiktok-logo" aria-label="Adafruit on TikTok" href="https://www.tiktok.com/@adafruit"  target="_blank" rel="noopener noreferrer"><svg viewBox="3 2 20 22" xmlns="http://www.w3.org/2000/svg"><path class="logo" d="M19.8059 7.50695C18.7771 7.50695 17.8278 7.16612 17.0655 6.59113C16.1912 5.93198 15.5631 4.9651 15.3412 3.85069C15.2863 3.57534 15.2567 3.29119 15.2539 3H12.3149V11.0308L12.3114 15.4297C12.3114 16.6057 11.5455 17.6029 10.4839 17.9536C10.1758 18.0553 9.8431 18.1036 9.49663 18.0846C9.05438 18.0603 8.63995 17.9268 8.27975 17.7113C7.51322 17.2529 6.99351 16.4212 6.97942 15.4698C6.95724 13.9829 8.15933 12.7706 9.64522 12.7706C9.93852 12.7706 10.2202 12.8185 10.4839 12.9054V10.7104V9.92134C10.2058 9.88015 9.92268 9.85867 9.63641 9.85867C8.01004 9.85867 6.48894 10.5347 5.40164 11.7526C4.57982 12.6731 4.08687 13.8473 4.01082 15.0786C3.91117 16.6962 4.50306 18.2339 5.65093 19.3683C5.81959 19.5349 5.9967 19.6895 6.1819 19.8321C7.16604 20.5894 8.36919 21 9.63641 21C9.92268 21 10.2058 20.9789 10.4839 20.9377C11.6677 20.7623 12.7599 20.2204 13.6219 19.3683C14.681 18.3215 15.2662 16.9318 15.2726 15.4526L15.2574 8.88369C15.7627 9.27347 16.3152 9.596 16.9081 9.84635C17.8303 10.2354 18.8081 10.4326 19.8144 10.4322V8.29814V7.50625C19.8151 7.50695 19.8066 7.50695 19.8059 7.50695Z" fill="currentColor"/></svg></a>
+
+        <a class="tumblr-logo" aria-label="Adafruit on Tumblr" href="https://adafruit.tumblr.com/" target="_blank" rel="noopener noreferrer"><i class="fa fa-tumblr" aria-hidden="true"></i></a>
+
+        <a class="threads-logo" href="https://www.threads.net/@adafruit" target="_blank" rel="noopener noreferrer" aria-label="Adafruit on Threads"><span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M331.5 235.7c2.2 .9 4.2 1.9 6.3 2.8c29.2 14.1 50.6 35.2 61.8 61.4c15.7 36.5 17.2 95.8-30.3 143.2c-36.2 36.2-80.3 52.5-142.6 53h-.3c-70.2-.5-124.1-24.1-160.4-70.2c-32.3-41-48.9-98.1-49.5-169.6V256v-.2C17 184.3 33.6 127.2 65.9 86.2C102.2 40.1 156.2 16.5 226.4 16h.3c70.3 .5 124.9 24 162.3 69.9c18.4 22.7 32 50 40.6 81.7l-40.4 10.8c-7.1-25.8-17.8-47.8-32.2-65.4c-29.2-35.8-73-54.2-130.5-54.6c-57 .5-100.1 18.8-128.2 54.4C72.1 146.1 58.5 194.3 58 256c.5 61.7 14.1 109.9 40.3 143.3c28 35.6 71.2 53.9 128.2 54.4c51.4-.4 85.4-12.6 113.7-40.9c32.3-32.2 31.7-71.8 21.4-95.9c-6.1-14.2-17.1-26-31.9-34.9c-3.7 26.9-11.8 48.3-24.7 64.8c-17.1 21.8-41.4 33.6-72.7 35.3c-23.6 1.3-46.3-4.4-63.9-16c-20.8-13.8-33-34.8-34.3-59.3c-2.5-48.3 35.7-83 95.2-86.4c21.1-1.2 40.9-.3 59.2 2.8c-2.4-14.8-7.3-26.6-14.6-35.2c-10-11.7-25.6-17.7-46.2-17.8H227c-16.6 0-39 4.6-53.3 26.3l-34.4-23.6c19.2-29.1 50.3-45.1 87.8-45.1h.8c62.6 .4 99.9 39.5 103.7 107.7l-.2 .2zm-156 68.8c1.3 25.1 28.4 36.8 54.6 35.3c25.6-1.4 54.6-11.4 59.5-73.2c-13.2-2.9-27.8-4.4-43.4-4.4c-4.8 0-9.6 .1-14.4 .4c-42.9 2.4-57.2 23.2-56.2 41.8l-.1 .1z"/></svg></span></a>
+
+        <a class="discord-logo" aria-label="Adafruit on Discord" href="https://adafru.it/discord" target="_blank" rel="noopener noreferrer"><svg style="height: 1em; margin-bottom: -0.15em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36"><path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg></a>
+
+        <a class="bluesky-logo" aria-label="Adafruit on Bluesky" href="https://bsky.app/profile/adafruit.com" target="_blank" rel="noopener noreferrer"><svg style="height: 1em; margin-bottom: -0.15em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M111.8 62.2C170.2 105.9 233 194.7 256 242.4c23-47.6 85.8-136.4 144.2-180.2c42.1-31.6 110.3-56 110.3 21.8c0 15.5-8.9 130.5-14.1 149.2C478.2 298 412 314.6 353.1 304.5c102.9 17.5 129.1 75.5 72.5 133.5c-107.4 110.2-154.3-27.6-166.3-62.9l0 0c-1.7-4.9-2.6-7.8-3.3-7.8s-1.6 3-3.3 7.8l0 0c-12 35.3-59 173.1-166.3 62.9c-56.5-58-30.4-116 72.5-133.5C100 314.6 33.8 298 15.7 233.1C10.4 214.4 1.5 99.4 1.5 83.9c0-77.8 68.2-53.4 110.3-21.8z"/></svg>
+</a>
+      </div>
+      <div class="footer-messaging">
+        <a href="https://www.adafruit.com/about">A Minority and Woman-owned Business Enterprise (M/WBE)</a>
+      </div>
+    </div>
+  </footer>
+
+    </div>
+  </div>
+</body>
+</html>

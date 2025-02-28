@@ -1,0 +1,16 @@
+import machine
+import time
+
+# Function to enter deep sleep mode
+def enter_deep_sleep(duration_ms):
+    print("Entering deep sleep for {} milliseconds".format(duration_ms))
+    time.sleep(1)  # Give some time to print the message
+    machine.deepsleep(duration_ms)
+
+# Main function
+def main():
+    time.sleep(2)
+    enter_deep_sleep(10000)
+
+if __name__ == "__main__":
+    main()

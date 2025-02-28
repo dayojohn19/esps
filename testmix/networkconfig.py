@@ -1,48 +1,34 @@
-import gc
+import json
 import network
+import gc
+import time
 import socket
 import ure
-import json
-import time
 import esp  
-import machine
+from configs.configs import essid,password,server_addr
 
 # Initialize global variables
 timer = None
-led = machine.Pin(2, machine.Pin.OUT)
-
-# LED Blinking functions
-def blink_led(timer):
-    led.value(not led.value()) 
-
-def start_blinking(speed=500):
-    global timer
-    if timer is None: 
-        timer = machine.Timer(0)
-        timer.init(period=speed, mode=machine.Timer.PERIODIC, callback=blink_led)
-
-def stop_blinking():
-    global timer
-    if timer is not None:
-        timer.deinit() 
-        timer = None 
-        led.value(1)
-
 # Network configuration
 wlan_ap = network.WLAN(network.AP_IF)
 wlan_ap.active(True)
-wlan_ap.config(essid='Dayo network config', password='123456789')
+wlan_ap.config(essid=str(essid),password=str('123456789'))
 wlan_sta = network.WLAN(network.STA_IF)
+wlan_sta.active(False)
 temp_server_timeout = 40
 server_socket = None
 start_time = None
+# LED Blinking functions
+
+
+
 
 def wait_to_connect(wlan_sta):
+    gc.collect()
     startTime = time.time()
     while not wlan_sta.isconnected() and time.time() - startTime <= 10:
         print('connecting')
         time.sleep(0.8)
-    stop_blinking()
 
 # HTTP response functions
 def send_response(client, payload, status_code=200):
@@ -63,7 +49,6 @@ def handle_root(client):
     response_variable = ""
     for ssid, *_ in wlan_sta.scan():
         response_variable += '<option value="{0}">{0}</option>'.format(ssid.decode("utf-8"))
-    
     response_footer = """
            </select> <br/>
            Password: <input name="password" type="password"></input> <br />
@@ -94,7 +79,6 @@ def handle_configure(client, request):
     wlan_sta.connect(ssid, password)
     wait_to_connect(wlan_sta)
     if wlan_sta.isconnected():
-        stop_blinking()
         import machine
         machine.reset()       
     send_response(client, "CANT CONNECT {}".format(ssid))
@@ -163,7 +147,6 @@ def handle_download(client, fpath):
             chunk = f.read(1024)
 
 def temporary_server():
-    led.value(0)
     addr = socket.getaddrinfo('192.168.4.1', 80)[0][-1]
     global server_socket
     server_socket = socket.socket()
@@ -173,12 +156,10 @@ def temporary_server():
     print('listening on', addr)
     global start_time
     start_time = time.time()
-    
     while True:
         try:
             ntimeout = time.time() - start_time
             if ntimeout > temp_server_timeout:
-                led.value(1)
                 gc.collect()
                 break
             client, addr = server_socket.accept()
@@ -210,7 +191,7 @@ def temporary_server():
         except OSError as e:
             if e.errno == 11: 
                 print("No client connected, waiting...")
-                time.sleep(0.5)
+                time.sleep(1)
             else:
                 print(f"Socket error: {e}")
                 break
@@ -220,8 +201,7 @@ def temporary_server():
     return
 
 def start(port=80):
-    start_blinking(2000)
-    addr = socket.getaddrinfo('192.168.4.1', 80)[0][-1]
+    addr = socket.getaddrinfo(server_addr, 80)[0][-1]
     global server_socket
     stop()
     server_socket = socket.socket()
@@ -258,18 +238,16 @@ def start(port=80):
     ap_if.active(False)
 
 def connectWifi(wifiSSID=None, wifiPassword=None):
-    print('Temporary Making Server')
+    print('Temp srvr')
     temporary_server()
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    start_blinking(150)
     time.sleep(1)
     gc.collect()
     time.sleep(1)
     esp.osdebug(None)
     time.sleep(1)
     if wifiSSID is None:
-        print('Importing from wifi settings json..')
         with open('configs/wifiSettings.json') as f:
             config = json.load(f)
             wifiSSID = config['ssid']
@@ -289,11 +267,9 @@ def connectWifi(wifiSSID=None, wifiPassword=None):
     time.sleep(1)
     if wlan.isconnected():
         print('Wifi Connected')
-        stop_blinking()
         wlan_ap.active(False)
         return [True, ' Wifi Connected']
     else:
-        print('Cant Connect Restarting')
         gc.collect()
         time.sleep(1)
         start()

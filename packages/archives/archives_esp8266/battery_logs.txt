@@ -1,0 +1,18 @@
+max voltage = 3.8 
+max reading = 700
+
+                                        690
+1:27                  AVERAGE READING:  688.8 ' Battery 67.3313 % 3.807v   '
+1:31                  AVERAGE READING:  675.0  ' Battery 65.9823 % 3.791v   '
+1:39                  AVERAGE READING:  670.0 ' Battery 65.4936 % 3.785v   '
+1:53                  AVERAGE READING:  662.3 ' Battery 64.7409 % 3.776v   '
+1:58                  AVERAGE READING:  660.2 ' Battery 64.5356 % 3.774v
+2:06                    AVERAGE READING:  655.4 ' Battery 64.0664 % 3.768v   '
+
+
+
+[1/10/2025 14:41:5]    Reading: 552.8  Battery 31.3999 %      battery checking
+[1/10/2025 14:43:21]    Reading: 684.6  Battery 97.2999 %      battery checking
+[1/10/2025 14:48:48]    Reading: 688.4  Battery 99.1999 %      battery checking
+[1/10/2025 15:1:57]    Reading: 604.4  Battery 57.1999 %      battery checking
+[1/10/2025 15:7:24]    Reading: 679.6  Battery 94.7999 %      battery checking

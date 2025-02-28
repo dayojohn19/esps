@@ -16,3 +16,4 @@ indications:
     ```
 
     in server [configs/](configs/) will be an option to download and add server timeout unless pressed the exit link <small> note: when downloading file refresh the page to finish</small>
+ 

@@ -6,3 +6,8 @@
 -   stop_blinking()
 -   led.value(`[0]`)
 -   led.value(`[1]`)
+```
+from led_signal import LEDSignal
+
+signal = LEDSignal(pin=2)
+```

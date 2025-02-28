@@ -30,7 +30,7 @@ def read_nfc(dev, tmot):
         print('Found card with UID:', [hex(i) for i in uid])
         print('Number_id: {}'.format(string_ID))
 
-
+z=1
 read_nfc(pn532, 500)
 import time
 while True:

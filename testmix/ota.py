@@ -42,15 +42,12 @@ class OTAUpdater:
     def connect_wifi(self):
         sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
-        if sta_if.isconnected():
-            return
-        else:
-            sta_if.connect(self.ssid, self.password)
-            while not sta_if.isconnected():
-                print('.', end="")
-                sleep(0.25)
-            print(f'Connected to WiFi, IP is: {sta_if.ifconfig()[0]}')
-            return
+        sta_if.connect(self.ssid, self.password)
+        while not sta_if.isconnected():
+            print('.', end="")
+            sleep(0.25)
+        print(f'Connected to WiFi, IP is: {sta_if.ifconfig()[0]}')
+        return
         
     def fetch_latest_code(self,firmware_url)->bool:
         response = urequests.get(firmware_url)
