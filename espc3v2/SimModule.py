@@ -13,16 +13,15 @@ class Sim():
         self.uart = UART(self.uart_num,baudrate,tx=self.tx,rx=self.rx)
         print('Starting Sim')
         try:
-            print("     Checking if Sim is Connected: ",end=' ')
+            print("     Checking if Sim is Connected")
             isConnected = self.write("AT\r")
             i=0
             s = time.time()
-            print('Checking: ',end='')
             while not 'OK' in isConnected:
                 if time.time()-s >=10:
                     break
                 time.sleep(1)
-                print('.',end='')
+                print('         Checking',i*'.')
                 i+=1
 
             if 'OK' in isConnected :
@@ -46,9 +45,7 @@ class Sim():
         time.sleep(0.5)
         # self.power.on()
         # self.write("AT+CMGF=1\r", cmdPurpose='Text Mode') # Put to Text Mode
-        if self.checkConnection() == False:
-            return print('Cant Connect Signal')
-
+        self.checkConnection()
         print('Sim Attributes: ') 
         for attr in dir(self):
             # Check if the attribute is callable (method) or a property
@@ -132,17 +129,16 @@ class Sim():
     
 
     def checkConnection(self):
-        print('         Sim checking connection')
+        print('         Sim checking connection ....')
         notConnected = True
         # self.write('AT+COPS=?\r', cmdPurpose='CHECK NETWORK') # 
         st = time.time()
 
         while notConnected:
-            print('.', end='')
             if time.time() - st > 30:
                 print('Cant Check Connection')
                 return False
-            time.sleep(1)
+            time.sleep(6)
             self.write("AT\r")
             isConnected = self.write('AT+CREG?\r',cmdPurpose='Check connection')
             print('     Connection: ', isConnected)
@@ -167,8 +163,6 @@ class Sim():
             self.write('AT+CREG=1\r', cmdPurpose='Forcing to Connect')
             print('     Trying Again')
         print('     Connected')
-        if notConnected:
-            return False
         return True
 
 
@@ -201,12 +195,8 @@ class Sim():
                 self.uart.write(bytes([26])) # stop the SIM Module for SMS
                 time.sleep(1)
                 response = self.uart.read()
-                if 'ERROR' in response:
-                    continue
-                else: 
-                    print('message Sent')
-                    sending = False
-                    break
+                print('message Sent')
+                sending = False
                 return True
             except Exception as e:
                 print('Cant Send Message, Probably no Signal', e)
@@ -389,46 +379,10 @@ class Sim():
             self.checkTypeOfMessage(message)
             rcvsms = [f'{message} - {phone_number} [ {date_sms} {time_sms} ]',phone_number]
             print('Found SMS: ',rcvsms)
-            self.processSMS(rcvsms)
             return rcvsms
         except Exception as e:
             print('Cant Receive SMS Error',e)
             return None
-    def processSMS(self,sms=None):
-        if sms == None:
-            print('No New Command')
-        else:
-            print('New Command: ',sms)
-            sms  = sms[0].lower().split()
-            # if "feed" in sms[0]:
-            #     # 'feed 3'  Sample message
-            #     print('Requesting to feed', sms)
-            #     self.feed = Feeder()
-            #     for i in range(int(sms[1])):
-            #         print(f'Feeding in {i+1}/{sms[1]}')
-            #         self.feed.go
-            #         time.sleep(0.5)
-            # if "mode" in sms[0]:
-                # 'mode session'
-                # 'mode toss'
-            print(f'checking mode {sms[1]}')
-            try:
-                from settings import Settings
-                setting = Settings(sms[0],sms[1])
-                setting.change()
-            except Exception as e:
-                print('Error Changing Mode: ',e)
-            for i in range(5):
-                print(f'sengind message in {i-5}')
-                time.sleep(1)
-            self.sim.sendSMS(message=f'Changed {sms[0]} to {self.mode.change(sms[1])}',  number=sms[1][1:])
-            if "check" in sms[0]:
-                # 'check battery'
-                if 'battery' in sms[1]:
-                    b= self.battery.record
-                    print(b)
-            print(f"Create a Func that will create a Command\n       {sms}")
-
 
 
     def checkTypeOfMessage(self,messageReceived):

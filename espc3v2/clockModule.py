@@ -1,4 +1,5 @@
 from machine import Pin, I2C, RTC , DEEPSLEEP,SoftI2C
+
 import time
 from utime import ticks_ms
 triggered_time = 0
@@ -56,7 +57,6 @@ class DS3231:
         """Get or set datetime
         Always sets or returns in 24h format, converts to 24h if clock is set to 12h format
         datetime : tuple, (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])"""
-        print('         (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])')
         if datetime is None:
             try:
                 self.i2c.readfrom_mem_into(self.addr, DATETIME_REG, self._timebuf)
@@ -272,13 +272,16 @@ class DS3231:
 
 # When alarm it will set the 32kHz output
 
+try:
+    from configs.configs import clock_scl,clock_sqw,clock_sda,alarm
 
-from configs.configs import clock_scl,clock_sda,clock_sqw, alarm,alarm_handler
+except:
+    print('Cant import configs')
 class Clock:
-    def __init__(self, sqw_pin=clock_sqw, scl_pin=clock_scl, sda_pin=clock_sda, handler_alarm=alarm_handler,alarm_time=alarm ,i2c_freq=100000 ):
+    def __init__(self, sqw_pin=clock_sqw, scl_pin=clock_scl, sda_pin=clock_sda, handler_alarm=None,alarm_time=alarm ,i2c_freq=100000 ):
         if sqw_pin == None:
             print('Please set SCL SDA SQW Pin and alarm handler function !!')
-
+            return 'Please set SCL SDA SQW Pin and alarm handler function !!'
         self.amhr=alarm_time['am']
         self.pmhr=alarm_time['pm']
         self.min=alarm_time['min']
@@ -295,7 +298,7 @@ class Clock:
         self.rtc = RTC()
         
         # print("Manually Checking Alarm")
-        print('\n\n --- Manual Checking ALARM -- ', end=' ')
+        print('\n\n --- Manual Checking ALARM -- ')
         if self.clock.check_alarm(1):
             self.check_handler(self.clock_sqw)
         #     print('\n       ALARM 1 True')
@@ -308,7 +311,7 @@ class Clock:
         #     print('\n   ALARM 2 True')
         # time.sleep(5)
         # print('ALARMS Manually Reviewed  ',self.get_time() )
-        print('  DONE  +++ \n')
+        print(' +++ Manual Checking DONE  +++ \n')
         self.alarm_daily(self.amhr,self.min)
         self.alarm2_daiy(self.pmhr,self.min)        
         self.setup_pins()
@@ -420,7 +423,10 @@ class Clock:
         self.alarm_daily(self.amhr,self.min)
         self.alarm2_daiy(self.pmhr,self.min)
         self.enable_32kHz_output(False)
-        self.passed_handler_alarm()
+        try:
+            self.passed_handler_alarm()
+        except Exception as e:
+            print('cant check_handler ',e)
         print('Alarm Reset\n')
 
     # def handler_32k(self, pin):
@@ -432,7 +438,7 @@ class Clock:
         self.hrs = hrs
         self.min = min
         self.clock.alarm1((sec, min, hrs), match=self.clock.AL1_MATCH_HMS)
-        print(f"        Alarm1 Set          {hrs}:{min}:{sec}" , end='')
+        print(f"        Alarm1 Set          {hrs}:{min}:{sec}")
 
     def alarm2_daiy(self, hrs=1, min=1, day=1):
         self.hrs = hrs

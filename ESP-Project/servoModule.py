@@ -8,7 +8,7 @@ servo_pin = machine.Pin(feederpin)
 
 # # servoPin = 5 
 # # Set up PWM Pin for servo control
-# servo = PWM(servo_pin)
+servo = PWM(servo_pin)
 # # Set Duty Cycle for Different Angles
 # max_duty = 7864
 # min_duty = 1802
@@ -78,34 +78,6 @@ class feedRun2():
         sleep(0.1)
         self.servo.duty_u16(0)
 feeder = feedRun2()
-
-
-# class Line():
-#     def deadslow():
-#         plastic.ccslow
-#         iron.cslow
-#     def s1:
-#     stop = 75
-
-#     def s2
-# def plastic():
-
-    
-#     cstop = 75
-#     cslow = 80
-#     cfast = 130
-    
-#     ccstop=75
-#     ccslow = 70
-#     ccfast = 30
-
-# def iron():
-#     cslow = 64
-#     cfast = 25
-
-
-#     ccfast = 140
-#     ccslow = 92
 
 
 

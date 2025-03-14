@@ -57,7 +57,7 @@ esptool.py --port /dev/cu.usbserial-10 --baud 115200 write_flash --flash_mode=do
 
 ### ESP 32
 ```
-esptool/esptool.py --chip esp32 --port /dev/tty.usbserial-58EA0095511 erase_flash
+esptool.py --chip esp32 --port /dev/tty.usbserial-58EA0095511 erase_flash
 
 esptool.py --chip esp32 --port /dev/tty.usbserial-58EA0095511 --baud 115200 write_flash -z 0x1000 /Users/nhoj/Desktop/garden/ESP_/firmwares/ESP32_GENERIC-20241129-v1.24.1.bin
 ```

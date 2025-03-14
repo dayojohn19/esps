@@ -1,7 +1,6 @@
 from machine import Pin, I2C, RTC , DEEPSLEEP,SoftI2C
 import time
-from utime import ticks_ms
-triggered_time = 0
+
 
 DATETIME_REG    = const(0) # 7 bytes
 ALARM1_REG      = const(7) # 5 bytes
@@ -56,13 +55,8 @@ class DS3231:
         """Get or set datetime
         Always sets or returns in 24h format, converts to 24h if clock is set to 12h format
         datetime : tuple, (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])"""
-        print('         (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])')
         if datetime is None:
-            try:
-                self.i2c.readfrom_mem_into(self.addr, DATETIME_REG, self._timebuf)
-            except Exception as e:
-                print('Error in reading time',e)
-                return
+            self.i2c.readfrom_mem_into(self.addr, DATETIME_REG, self._timebuf)
             # 0x00 - Seconds    BCD
             # 0x01 - Minutes    BCD
             # 0x02 - Hour       0 12/24 AM/PM/20s BCD
@@ -88,7 +82,7 @@ class DS3231:
             year = bcdtodec(self._timebuf[6]) + 2000
 
             if self.OSF():
-                print(f"WARNING: Oscillator stop flag set. Time may not be accurate.\n run clock.datetime()  (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])\n {year, month, day, weekday, hour, minutes, seconds, 0}")
+                print("WARNING: Oscillator stop flag set. Time may not be accurate.\n run clock.datetime()  (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])\n")
 
             return (year, month, day, weekday, hour, minutes, seconds, 0) # Conforms to the ESP8266 RTC (v1.13)
 
@@ -136,7 +130,7 @@ class DS3231:
             self.i2c.writeto_mem(self.addr, CONTROL_REG, bytearray([(self._buf[0] & 0xe3) | (freq << 3)]))
         return True
 
-    def alarm1(self, time=None, match=AL1_MATCH_DHMS, int_en=True, weekday=True):
+    def alarm1(self, time=None, match=AL1_MATCH_DHMS, int_en=True, weekday=False):
         """Set alarm1, can match mday, wday, hour, minute, second
 
         time    : tuple, (second,[ minute[, hour[, day]]])
@@ -173,7 +167,7 @@ class DS3231:
 
         return self._al1_buf
 
-    def alarm2(self, time=None, match=AL2_MATCH_DHM, int_en=True, weekday=True):
+    def alarm2(self, time=None, match=AL2_MATCH_DHM, int_en=True, weekday=False):
         """Get/set alarm 2 (can match minute, hour, day)
 
         time    : tuple, (minute[, hour[, day]])
@@ -273,155 +267,94 @@ class DS3231:
 # When alarm it will set the 32kHz output
 
 
-from configs.configs import clock_scl,clock_sda,clock_sqw, alarm,alarm_handler
+
 class Clock:
-    def __init__(self, sqw_pin=clock_sqw, scl_pin=clock_scl, sda_pin=clock_sda, handler_alarm=alarm_handler,alarm_time=alarm ,i2c_freq=100000 ):
+    def __init__(self, sqw_pin=None, scl_pin=None, sda_pin=None, handler_alarm=None,alarm_time=None ,i2c_freq=100000 ):
         if sqw_pin == None:
             print('Please set SCL SDA SQW Pin and alarm handler function !!')
-
+            return 'Please set SCL SDA SQW Pin and alarm handler function !!'
         self.amhr=alarm_time['am']
         self.pmhr=alarm_time['pm']
         self.min=alarm_time['min']
         self.i2c_freq = i2c_freq
-        self.passed_handler_alarm = handler_alarm
+        self.handler_alarm = handler_alarm
         self.clock_sqw = sqw_pin  # D7
         self.clock_scl = scl_pin  # D5
         self.clock_sda = sda_pin  # D6
         # self.clock_k32 = k32_pin  # D8
         self.clock_i2c = SoftI2C(scl=Pin(self.clock_scl), sda=Pin(self.clock_sda), freq=i2c_freq)  # Example with GPIO14 and GPIO12 SDA=D6 SCL=D5
-        # self.clock_i2c = SoftI2C(scl=Pin(clock_scl), sda=Pin(clock_sda))  # Example with GPIO14 and GPIO12 SDA=D6 SCL=D5
         self.clock = DS3231(self.clock_i2c)
         self.enable_32kHz_output(False)
         self.rtc = RTC()
-        
-        # print("Manually Checking Alarm")
-        print('\n\n --- Manual Checking ALARM -- ', end=' ')
+        self.setup_pins()
+        from uos import uname
         if self.clock.check_alarm(1):
-            self.check_handler(self.clock_sqw)
-        #     print('\n       ALARM 1 True')
-        #     self.clock.check_alarm(1)
-        #     self.passed_handler_alarm()
+            self.clock.check_alarm(1)
+            print('\n       ALARM 1 ')
+            self.handler_alarm()
+            # if  uname().nodename == 'esp32':
+            #     pass
+            # else:
+            #     self.handler_alarm()
         if self.clock.check_alarm(2):
-            self.check_handler(self.clock_sqw)
-        #     self.clock.check_alarm(2)
-        #     self.passed_handler_alarm()
-        #     print('\n   ALARM 2 True')
-        # time.sleep(5)
-        # print('ALARMS Manually Reviewed  ',self.get_time() )
-        print('  DONE  +++ \n')
+            self.clock.check_alarm(2)
+            self.handler_alarm()
+            # if  uname().nodename == 'esp32':
+            #     pass
+            # else:
+            #     self.handler_alarm()
+            print('\n   ALARM 2')
+
+        print('ALARMS Reviewed v1')
         self.alarm_daily(self.amhr,self.min)
         self.alarm2_daiy(self.pmhr,self.min)        
-        self.setup_pins()
+        print(f'Current Time: {self.clock.datetime()}')
         self.sync_rtc_with_ds3231()
 
     def sync_rtc_with_ds3231(self):
         print('Syncing RTC with DS3231')
-        time.sleep(2)  # Wait for the RTC to stabilize
+        time.sleep(3)  # Wait for the RTC to stabilize
         self.rtc.datetime(self.clock.datetime())
 
     def get_time(self):
-        date = "{}/{}/{}".format(self.clock.datetime()[1], self.clock.datetime()[2], self.clock.datetime()[0])
-        time = "{}:{}:{}".format(self.clock.datetime()[4], self.clock.datetime()[5], self.clock.datetime()[6])
+        date = "{}/{}/{}".format(self.rtc.datetime()[1], self.rtc.datetime()[2], self.rtc.datetime()[0])
+        time = "{}:{}:{}".format(self.rtc.datetime()[4], self.rtc.datetime()[5], self.rtc.datetime()[6])
         return [date, time]
-    def real_time(self):
-        time_tuple = self.clock.datetime()
-        month_names = ["January", "February", "March", "April", "May", "June",
-               "July", "August", "September", "October", "November", "December"]
-        year = time_tuple[0]
-        month = time_tuple[1]
-        day = time_tuple[2]
-        hour = time_tuple[4]
-        minute = time_tuple[5]
-        second = time_tuple[6]
-        if hour >= 12:
-            period = "PM"
-            if hour > 12:
-                hour -= 12
-        else:
-            period = "AM"
-            if hour == 0:
-                hour = 12  # Midnight case
-        formatted_time = '{} {}, {} {:02}:{:02}:{:02} {}'.format(
-            month_names[month - 1], day, year, hour, minute, second, period)
-        return formatted_time
+
 
     def setup_pins(self):
         import esp32
-        # self.sqw_pin = Pin(self.clock_sqw, Pin.IN, Pin.PULL_DOWN)
         self.sqw_pin = Pin(self.clock_sqw, Pin.IN, Pin.PULL_UP)
         # esp32.wake_on_ext0(self.clock_sqw, level= esp32.WAKEUP_ALL_LOW)
-        # esp32.wake_on_ext1(pins = (self.clock_sqw,), level= esp32.WAKEUP_ANY_HIGH)
         esp32.wake_on_ext1(pins = (self.clock_sqw,), level= esp32.WAKEUP_ALL_LOW)
-        self.sqw_pin.irq(trigger=Pin.IRQ_FALLING, handler=self.check_handler)
 
         # self.k32_pin = Pin(self.clock_k32, Pin.IN, Pin.PULL_DOWN)
+        self.sqw_pin.irq(trigger=Pin.IRQ_FALLING, handler=self.handler_SQW)
         # self.k32_pin.irq(trigger=Pin.IRQ_RISING, handler=self.handler_32k)
 
     def enable_32kHz_output(self, enable=False):
         self.clock.output_32kHz(enable)
         return enable
 
-    # def handler_SQW(self, pin):
-    def check_handler(self, pin):
-        global triggered_time
-        new_time = ticks_ms()
-        if (new_time - triggered_time) < 500:
-            return        
-        triggered_time = new_time
-        isgoing = False
-        if (self.clock.check_alarm(1)):
-            print('alarm1: True')
-            isgoing = True
-        elif (self.clock.check_alarm(2)):
-            print('alarm2:  True')
-            isgoing = True
-        if isgoing == False:
-            print('No Alarm Saw')
-            return
-        def confirm_alarm(currentdate, alarm_min):
-            print('Confirming Alarm')
-            """
-            Check if alarm was triggered near the alarm set
-            """
-            time_tuple = currentdate
-            hour = 1
-            alarm_hour = 1
-            minute = time_tuple[5] 
-            time_in_minutes = hour * 60 + minute
-            alarm_time_in_minutes = alarm_hour * 60 + alarm_min
-            print(f'Alarm Set Time: {alarm_hour} {alarm_min} ')
-            print(f'Alarm Current Time: {hour} {minute}')
-            minute_diff = abs(time_in_minutes - alarm_time_in_minutes)
-            print('  -----   Alarm Diff: ',minute_diff)
-            if minute_diff <= 10:
-                print("         The alarm time is within ±10 minutes of the given Minutes.")
-                print('Confirmed')
-                return True
-            else:
-                print('Not Confirmed')
-
-                return minute_diff
-                
-        if  confirm_alarm(self.clock.datetime(), self.min) != True:
-            print('     Sorry Alarm Pin Triggered at wrong Time')
-            return
-        time.sleep(2)
-        print('Alarming     Pin Trigger handler_SQL()')
-        print(f"[ {self.get_time()[1]} ]SQW Interrupt Triggered by PIN:", pin)
+    def handler_SQW(self, pin):
+        time.sleep(10)
+        print('Alarm Started\n')
         self.enable_32kHz_output(True)
-
+        print(self.clock.check_alarm(1))
+        print(self.clock.check_alarm(2))
         # if self.clock.check_alarm(1):
         #     print('\n       ALARM 1 ')
-        #     self.passed_handler_alarm()
+        #     self.handler_alarm()
         # if self.clock.check_alarm(2):
-        #     self.passed_handler_alarm()
+        #     self.handler_alarm()
         #     print('\n   ALARM 2')
-        time.sleep(2)
+        print('ALARMS SAW')
         self.alarm_daily(self.amhr,self.min)
         self.alarm2_daiy(self.pmhr,self.min)
+        print(f" \n {self.clock.datetime()} SQW Interrupt Triggered by PIN:", pin)
         self.enable_32kHz_output(False)
-        self.passed_handler_alarm()
-        print('Alarm Reset\n')
+        self.handler_alarm()
+        print('Alarm Ended\n')
 
     # def handler_32k(self, pin):
     #     print("32kHz Interrupt Triggered by PIN:", pin)
@@ -432,14 +365,13 @@ class Clock:
         self.hrs = hrs
         self.min = min
         self.clock.alarm1((sec, min, hrs), match=self.clock.AL1_MATCH_HMS)
-        print(f"        Alarm1 Set          {hrs}:{min}:{sec}" , end='')
+        print(f"Alarm1 Set {hrs}h : {min}m : {sec}s")
 
     def alarm2_daiy(self, hrs=1, min=1, day=1):
         self.hrs = hrs
         self.min = min
         self.clock.alarm2((min, hrs, day), match=self.clock.AL2_MATCH_HM)
-        print(f"        Alarm2 Set          {hrs}:{min}:0")
-        # print(f"Alarm2 Set {hrs} : {min}m")
+        print(f"Alarm2 Set {hrs} : {min}m")
 
 
 

@@ -2,10 +2,10 @@ import machine
 from time import sleep
 from utime import ticks_ms
 from machine import Pin
-from configs.configs import ledsignalPin
+
 import time
 class LEDSignal:
-    def __init__(self, pin=ledsignalPin):
+    def __init__(self, pin):
         self.pin=pin
         self.led = Pin(pin, Pin.OUT)
         self.timer = None

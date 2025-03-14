@@ -1,4 +1,7 @@
 
+## Everyday Usage
+mpy-cross everytime  editing module
+and edit on pymakr.conf
 
 ##     Pins Map
 0   batteryPin      --- Divider Resistor on 5v and Ground __ down to 1.2v using ADC.atten=2

@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"name": "serial://dev/tty.usbserial-58EA0095511",
+			"uri": "serial://%2fdev%2ftty.usbserial-58ea0095511/"
+		},
+		{
+			"name": "serial://dev/tty.usbserial-58EA0095511",
+			"uri": "serial://%2fdev%2ftty.usbserial-58ea0095511/"
+		}
+	],
+	"settings": {}
+}

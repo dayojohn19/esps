@@ -21,12 +21,16 @@
 			"path": "ESP-Project"
 		},
 		{
+			"name": "espc3v2",
+			"path": "espc3v2"
+		},
+		{
 			"name": "serial://dev/tty.usbmodem101",
 			"uri": "serial://%2fdev%2ftty.usbmodem101/"
 		},
 		{
-			"name": "serial://dev/tty.usbserial-58EA0095511",
-			"uri": "serial://%2fdev%2ftty.usbserial-58ea0095511/"
+			"name": "serial://dev/tty.usbmodem1101",
+			"uri": "serial://%2fdev%2ftty.usbmodem1101/"
 		},
 		{
 			"name": "serial://dev/tty.usbmodem101",

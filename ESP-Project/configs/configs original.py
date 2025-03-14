@@ -1,18 +1,14 @@
 sim_uart=1
 sim_tx = 20
 sim_rx = 21
-
 # sim_rx = 5
 sim_baud=115200
 
-clock_sqw = 5
+clock_sqw = 4
 clock_scl = 7
 clock_sda   = 6
+
 alarm = {'am':5,'pm':15,'min':58}
-def alarm_handler():
-    print('Clock Alarmed')
-
-
 scanStart = 6
 scanEnd = 18
 daytimeEnd = 19
