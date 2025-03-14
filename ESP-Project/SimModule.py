@@ -88,47 +88,53 @@ class Sim():
             pass
 
     def connectInternet(self):
-        try:
-            self.write('AT+CSQ\r\n')
-            time.sleep(1)
-            print('Connected 1/6')
-            self.write('AT+CGDCONT=1,"IP","internet"\r\n')
-            time.sleep(1)
-            print('Connected 2/6')
-            self.write('AT+CGACT=1,1\r\n')
-            self.write('AT+CGPADDR=1\r\n')
-            print('Connected Address 3/6')
-            time.sleep(1)
-            # self.write('AT+CGDATA="PPP",1\r\n')
-            self.write('ATD*99#\r\n')
-            print('Connected 4/6')
-            time.sleep(1)            
-            import network
-            # network.WLAN().active(False)
-            ic = network.PPP(self.uart)
-            ic.active(True)
-            ic.connect()
-            print('Connected 5/6')
-            time.sleep(3)
-            if ic.isconnected():
-                print('Connected 6/6')
-            else:
-                print('waiting for connection')
-                time.sleep(10)
+        st = time.time()
+        while True:
+            print('     Trying Connecting to network')
+            if time.time() - st > 120:
+                print('Cant Check Connection')
+                return False                
+            try:
+                self.write('AT+CSQ\r\n')
+                time.sleep(1)
+                print('Connected 1/6')
+                self.write('AT+CGDCONT=1,"IP","internet"\r\n')
+                time.sleep(1)
+                print('Connected 2/6')
+                self.write('AT+CGACT=1,1\r\n')
+                self.write('AT+CGPADDR=1\r\n')
+                print('Connected Address 3/6')
+                time.sleep(1)
+                # self.write('AT+CGDATA="PPP",1\r\n')
+                self.write('ATD*99#\r\n')
+                print('Connected 4/6')
+                time.sleep(1)            
+                import network
+                # network.WLAN().active(False)
+                ic = network.PPP(self.uart)
+                ic.active(True)
+                ic.connect()
+                print('Connected 5/6')
+                time.sleep(3)
                 if ic.isconnected():
                     print('Connected 6/6')
-
                 else:
-                    print('Cant Connect')
+                    print('waiting for connection')
+                    time.sleep(10)
+                    if ic.isconnected():
+                        print('Connected 6/6')
 
-            print('Internet Connected variable  self.ic   ')
-            self.ic = ic
-            return ic
+                    else:
+                        print('Cant Connect')
 
-                
-        except Exception as e:
-            print(f'Cant Connect Internet {e}')
-            return False
+                print('Internet Connected variable  self.ic   ')
+                self.ic = ic
+                return ic
+
+                    
+            except Exception as e:
+                print(f'Cant Connect Internet {e}')
+                return False
     
 
     def checkConnection(self):

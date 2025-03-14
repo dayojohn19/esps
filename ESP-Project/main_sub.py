@@ -659,9 +659,12 @@ def connect_or_create_wifi(sim=None):
 class OTAUpdater:
     gc.collect()
     # ledlight.start(100)
-    giturl = "https://github.com/dayojohn19/esp_supermini/"
+    # giturl = "https://github.com/dayojohn19/esp_supermini/"
+    # giturl = "https://github.com/dayojohn19/esp_supermini/"
+    giturl = "https://github.com/dayojohn19/esps/"
     def __init__(self, repo_url=giturl, filenames=files_to_update):
         self.filenames = filenames
+        print('\n\n     ', repo_url)
         self.repo_url = repo_url
         if "www.github.com" in self.repo_url :
             print(f"Updating {repo_url} to raw.githubusercontent")
@@ -885,22 +888,22 @@ class Train():
         return True
 
 
-def alert_user(alertmessage): #unused
-    textWriter('alert.txt',str(alertmessage))
-    try:
-        timestamp = RTC().datetime()
-        try:
-            af.sim.sendwhatsapp(f'{timestamp} -- {alertmessage}')
-            print('Done sending')
-        except:
-            print('Cant send whatsapp')
-        try:
-            af.sim.sendSMS(message=f'{timestamp} -- {alertmessage}')
-        except:
-            print(' Cant Send sms')
-    except Exception as e:
-        print('Cant alert ',e)
-        textWriter('alert.txt',f'Cant alert {e}')
+# def alert_user(alertmessage): #unused
+#     textWriter('alert.txt',str(alertmessage))
+#     try:
+#         timestamp = RTC().datetime()
+#         try:
+#             af.sim.sendwhatsapp(f'{timestamp} -- {alertmessage}')
+#             print('Done sending')
+#         except:
+#             print('Cant send whatsapp')
+#         try:
+#             af.sim.sendSMS(message=f'{timestamp} -- {alertmessage}')
+#         except:
+#             print(' Cant Send sms')
+#     except Exception as e:
+#         print('Cant alert ',e)
+#         textWriter('alert.txt',f'Cant alert {e}')
 
 
 

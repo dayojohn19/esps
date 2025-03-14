@@ -109,8 +109,8 @@ time.sleep(1)
 try:
     # print('trying to update')
     # try:
-    # ic = connect_or_create_wifi()
-    # o = OTAUpdater()
+    ic = connect_or_create_wifi()
+    o = OTAUpdater()
     #     ou = OTAUpdater()
     # except Exception as e:
     #     print('Cant connect to internet reason: ',e)
