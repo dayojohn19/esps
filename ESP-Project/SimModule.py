@@ -21,7 +21,8 @@ class Sim():
             while not 'OK' in isConnected:
                 if time.time()-s >=20:
                     break
-                self.write('ATD*99#\r\n')
+                isConnected = self.write("AT\r")
+                # self.write('ATD*99#\r\n')
                 time.sleep(1)
                 print('.',end='')
                 i+=1

@@ -29,7 +29,7 @@ try:
     # ic = connect_or_create_wifi()
     # gnd.off
     # time.sleep(1)
-    # gnd.on
+    gnd.on
     from otaupdater import OTAUpdater
     from internetwifi import connect_or_create_wifi
     # o = OTAUpdater()
@@ -38,13 +38,14 @@ try:
     #     print('Cant connect to internet reason: ',e)
     # gnd.on
     # time.sleep(3)
-    # s= Sim()
-    # s.connectInternet()
+    s= Sim()
+    s.connectInternet()
+    o = OTAUpdater()
     # x = RFIDReader()
     # time.sleep(2)
     # x.scan()
     # ic = connect_or_create_wifi()
-    gnd.on
+    gnd.on 
     af = AutoFeeder()
     af.run()
 except Exception as e: 

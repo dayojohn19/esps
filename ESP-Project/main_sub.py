@@ -33,8 +33,8 @@ def timeChecker(pin=None):
         s.receiveSMS()
     except:
         print(' no AF')
-    print(f'Time(2) if {ch} >= {daytimeEnd} scanEnd')
-    print('\n   ------- Daytime Cheker  --------    \n')
+    # print(f'Time(2) if {ch} >= {daytimeEnd} scanEnd')
+    # print('\n   ------- Daytime Cheker  --------    \n')
     if ch > daytimeEnd:
         print(f'\n\n Not Daytime now {ch} >= {daytimeEnd}')
         # print('Going Deepsleep \n\n')
@@ -43,7 +43,7 @@ def timeChecker(pin=None):
     return print('Still daytime')
 timer = Timer(2)    
 timer.init(period=60000, mode=Timer.PERIODIC, callback=timeChecker)
-# timer.deinit()
+# timer.deinit() 
 
 class Power:
     def __init__(self,pin = groundPin):

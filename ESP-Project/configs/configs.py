@@ -45,7 +45,7 @@ whatsapp_key="2890524"
 rootpath = 'configs/'            
 
 wifiSSID = 'HGW-5DF528'
-wifipassword = 'dayosfamily'
+wifipassword = 'dayosfamilys'
 
 groundPin = 10
 servoPin= 9

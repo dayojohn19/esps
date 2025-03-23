@@ -13,10 +13,10 @@ def connect_or_create_wifi(sim=None):
         print('Testing Internet')
         try:
             # Try to connect to Google's DNS server (8.8.8.8)
-            addr = socket.getaddrinfo('8.8.8.8', 20)
+            addr = socket.getaddrinfo('8.8.8.8', 80)
             s = socket.socket()
             s.connect(addr[0][-1])
-            print('Internet connected')
+            print('Internet connected') 
             s.close()
             return True
         except Exception as e:
