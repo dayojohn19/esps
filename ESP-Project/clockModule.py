@@ -56,7 +56,7 @@ class DS3231:
         """Get or set datetime
         Always sets or returns in 24h format, converts to 24h if clock is set to 12h format
         datetime : tuple, (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])"""
-        print('         (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])')
+        print('                                                             (0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])')
         if datetime is None:
             try:
                 self.i2c.readfrom_mem_into(self.addr, DATETIME_REG, self._timebuf)
@@ -273,7 +273,7 @@ class DS3231:
 # When alarm it will set the 32kHz output
 
 
-from configs.configs import clock_scl,clock_sda,clock_sqw, alarm,alarm_handler
+from configs.configs import clock_scl,clock_sda,clock_sqw, alarm, alarm_handler
 class Clock:
     def __init__(self, sqw_pin=clock_sqw, scl_pin=clock_scl, sda_pin=clock_sda, handler_alarm=alarm_handler,alarm_time=alarm ,i2c_freq=100000 ):
         if sqw_pin == None:
@@ -308,11 +308,11 @@ class Clock:
         #     print('\n   ALARM 2 True')
         # time.sleep(5)
         # print('ALARMS Manually Reviewed  ',self.get_time() )
-        print('  DONE  +++ \n')
         self.alarm_daily(self.amhr,self.min)
         self.alarm2_daiy(self.pmhr,self.min)        
         self.setup_pins()
         self.sync_rtc_with_ds3231()
+        print(' ***  Clock DONE  +++ \n')
 
     def sync_rtc_with_ds3231(self):
         print('Syncing RTC with DS3231')
@@ -441,6 +441,61 @@ class Clock:
         print(f"        Alarm2 Set          {hrs}:{min}:0")
         # print(f"Alarm2 Set {hrs} : {min}m")
 
+
+
+def date_to_tuple(datestr, ismachineRTC=False):
+    instruction = """
+    from sim.datetime() to updating ds3231 time
+    """
+    print('Instruction: ',instruction)
+    date_str = datestr
+    month_map = {'January': 1, 'February': 2, 'March': 3, 'April': 4, 'May': 5,'June': 6, 'July': 7, 'August': 8, 'September': 9, 'October': 10,'November': 11, 'December': 12}
+    date_parts = date_str.split(', ')
+    month_name = date_parts[0]
+    day, year = date_parts[1].split(' ')
+    month = month_map[month_name]
+    day = int(day)
+    year = int(year)
+    time_parts, am_pm = date_parts[2].split(' ')
+    hour, minute, second = map(int, time_parts.split(':'))
+    if am_pm == 'PM' and hour != 12:
+        hour += 12
+    elif am_pm == 'AM' and hour == 12:
+        hour = 0
+    if ismachineRTC:
+        date_tuple = (year, month, day, 0, hour, minute, second, 0)
+    else:   
+        date_tuple = (year, month, day, hour, minute, second, 0)
+    return date_tuple #(0-year, 1-month, 2-day, 3-hour, 4-minutes[, 5-seconds[, 6-weekday]])
+
+
+def updateClock(c,s, ismachine=False):
+    instruction = """
+    updateClock(    clock_to_update ,   clock_origin   )
+    clock_to_update.datetime(clock_origin.datetime())
+        if ismachine means the clock is machine.RTC() else it is clock.clock
+    """
+    # print('Instruction: \n', instruction)
+    try:
+        if c.datetime()[0] < 2024:
+            try:
+                c.datetime()
+            except:
+                c.clock.datetime()
+                c = c.clock
+            # if c.OSF():
+            newTime = s.datetime()
+            print(f'        Clock Time not Updated {c.datetime()}')
+            updatedt = date_to_tuple(newTime, ismachineRTC=ismachine)
+            c.datetime((updatedt))
+            print('             Updated Clock')
+    except:
+        newTime = s.clock.datetime()
+    if c.datetime()[0] < 2022:
+        print('Cant Update Sim no SIgnal')
+        time.sleep(3)
+        return False
+    return True
 
 
 # Example usage

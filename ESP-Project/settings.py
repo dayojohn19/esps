@@ -10,16 +10,20 @@ class Settings():
             gc.collect()
             with open('settings.json') as f:
                 self.data = json.load(f)
-                try:
-                    val = self.data[set]
-                except:
-                    # json.dump({set: val}, f)
-                    self.data[set] = val
-                    # json.dump(self.data, f)
-                    self.set(val)
-                f.close()
+                if val==None:
+                    try:
+                        val = self.data[set]
+                    except:
+                        # json.dump({set: val}, f)
+                        self.data[set] = val
+                        # json.dump(self.data, f)
+                        self.set(val)
+                    f.close()
+                else:
+                    self.val = val      
+            self.set = set  
+            self.val = val
             print(f"set '{set}' {val}")
-            self.val = val        
         else:
             with open('settings.json', 'w') as f:
                 json.dump({set: val}, f)

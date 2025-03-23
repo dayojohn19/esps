@@ -1,6 +1,6 @@
 
 from machine import UART, Pin # type: ignore
-from configs.configs import sim_rx,sim_tx, sim_uart, sim_baud
+from configs.configs import sim_rx, sim_tx, sim_uart, sim_baud
 import time
 # ,sim_pin
  
@@ -19,8 +19,9 @@ class Sim():
             s = time.time()
             print('Checking: ',end='')
             while not 'OK' in isConnected:
-                if time.time()-s >=10:
+                if time.time()-s >=20:
                     break
+                self.write('ATD*99#\r\n')
                 time.sleep(1)
                 print('.',end='')
                 i+=1
@@ -207,12 +208,13 @@ class Sim():
                 self.uart.write(bytes([26])) # stop the SIM Module for SMS
                 time.sleep(1)
                 response = self.uart.read()
-                if 'ERROR' in response:
-                    continue
-                else: 
-                    print('message Sent')
-                    sending = False
-                    break
+                # if 'ERROR' in response:
+                #     print('Error sending sms')
+                #     pass
+                # else: 
+                #     print('message Sent')
+                #     pass
+                sending = False
                 return True
             except Exception as e:
                 print('Cant Send Message, Probably no Signal', e)
@@ -418,16 +420,20 @@ class Sim():
                 # 'mode session'
                 # 'mode toss'
             print(f'checking mode {sms[1]}')
+            sampleSMS = ['test command fiirst - +639765514253 [ 25/03/04 14:41:59 +32 ] - +639765514253 [ 25/03/04 14:41:59 +32 ]', '+639765514253']
             try:
                 from settings import Settings
+                if sms[0] == 'alarm':
+                    print('Craete func that change the alarm')
                 setting = Settings(sms[0],sms[1])
                 setting.change()
             except Exception as e:
                 print('Error Changing Mode: ',e)
             for i in range(5):
-                print(f'sengind message in {i-5}')
+                print(f'sending message in {i-5}')
                 time.sleep(1)
-            self.sim.sendSMS(message=f'Changed {sms[0]} to {self.mode.change(sms[1])}',  number=sms[1][1:])
+            print(f'sending Message to {sms[3][1:]}')
+            self.sendSMS(message=f'Changed {sms[0]} to {sms[1]}',  number=sms[3][1:])
             if "check" in sms[0]:
                 # 'check battery'
                 if 'battery' in sms[1]:

@@ -18,115 +18,35 @@ while True:
         if e & select.POLLIN:                                                                                                  
             d = u.read()                                                                                                       
             print('received: ',d)  
-"""
 
-# def uart_listener():
-#     u = UART(1,baudrate=9600,rx=5)
-#     poll = select.poll()
-#     poll.register(u,select.POLLIN)
-#     while True:
-#         e = poll.poll(1000)
-#         for f, ee in e:
-#             if ee & select.POLLIN:
-#                 d = u.read().decode()
-#                 print(d)
-#         time.sleep(0.1)
-
-
-
-
-
-
-
-"""
 # Sample receiveSMS
 return ['test command fiirst - +639765514253 [ 25/03/04 14:41:59 +32 ] - +639765514253 [ 25/03/04 14:41:59 +32 ]', '+639765514253']
 """
-
-
-
-# gnd = Power(groundPin) # whole ground Pin
-# sim = isim()
-# baty = Battery()
-# feeder = Feeder()
-# wake = Wake()
-# buzzer = Buzzer()
-# flygate = FlyGate()
-# rf = RFIDReader()
-# ic = connect_or_create_wifi()
-# ou = OTAUpdater()
-# t = Train()
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# gnd.on
-
-
-
-
-
-
-time.sleep(1)
-
-
-
-
-
-# text_commands = {
-#     'battery': 'add func battery'
-# }
-
-
-# print('\n----------- \n  ')
-
-
 try:
     # print('trying to update')
     # try:
-    ic = connect_or_create_wifi()
-    o = OTAUpdater()
+    gnd = Power()
+    # ic = connect_or_create_wifi()
+    # gnd.off
+    # time.sleep(1)
+    # gnd.on
+    from otaupdater import OTAUpdater
+    from internetwifi import connect_or_create_wifi
+    # o = OTAUpdater()
     #     ou = OTAUpdater()
     # except Exception as e:
     #     print('Cant connect to internet reason: ',e)
-
     # gnd.on
     # time.sleep(3)
     # s= Sim()
     # s.connectInternet()
-
     # x = RFIDReader()
     # time.sleep(2)
     # x.scan()
     # ic = connect_or_create_wifi()
-    gnd = Power()
     gnd.on
     af = AutoFeeder()
+    af.run()
 except Exception as e: 
     print("Error Main", "   Reason: ",e)
     print('Resetting in 10')
