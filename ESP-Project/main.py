@@ -42,6 +42,8 @@ try:
     s.connectInternet()
     o = OTAUpdater()
     # x = RFIDReader()
+    gnd.off
+    time.sleep(3)
     # time.sleep(2)
     # x.scan()
     # test 2 permission
