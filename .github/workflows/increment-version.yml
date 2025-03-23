@@ -1,0 +1,49 @@
+name: Increment Version on Push
+
+on:
+  push:
+    branches:
+      - main  # Change to your default branch name if it's different (e.g., 'master')
+
+jobs:
+  increment-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Increment the version number and add human-readable timestamp to version.json
+      - name: Increment Version and Add Human-readable Timestamp
+        run: |
+          # Check if version.json exists, else initialize version to 0
+          if [ -f version.json ]; then
+            # Read the current version from version.json
+            VERSION=$(jq '.version' version.json)
+          else
+            VERSION=0
+          fi
+
+          # Increment the version number
+          VERSION=$((VERSION + 1))
+
+          # Get the current human-readable timestamp (e.g., "Oct 17 14:23:45 2025")
+          TIMESTAMP=$(date +"%b %d %H:%M:%S %Y")
+
+          # Write the new version and human-readable timestamp to version.json
+          echo "{\"version\": $VERSION, \"timestamp\": \"$TIMESTAMP\"}" > version.json
+
+          # Output the new version and timestamp for visibility
+          echo "New version: $VERSION, Timestamp: $TIMESTAMP"
+
+      # Step 3: Commit the updated version.json and push it back to the repository
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add version.json
+          git commit -m "Increment version to $VERSION and add timestamp $TIMESTAMP"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
