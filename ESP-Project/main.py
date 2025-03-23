@@ -44,6 +44,7 @@ try:
     # x = RFIDReader()
     # time.sleep(2)
     # x.scan()
+    # test
     # ic = connect_or_create_wifi()
     gnd.on 
     af = AutoFeeder()
