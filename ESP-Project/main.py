@@ -44,7 +44,7 @@ try:
     # x = RFIDReader()
     gnd.off
     time.sleep(3)
-    # time.sleep(2) 4 5 6 7
+    # time.sleep(2) 4 5 6 7 8
     # x.scan()
     # test 2 permission
     # ic = connect_or_create_wifi()
